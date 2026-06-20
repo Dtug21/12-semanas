@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programa 12 Semanas — Piso Pélvico y Función Eréctil</title>
+<style>
+  :root{
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --ink: #1F2B24;
+    --ink-soft: #5B6B61;
+    --ink-faint: #93A199;
+    --line: #E2E0D6;
+    --teal: #0F6E56;
+    --teal-soft: #E1F5EE;
+    --rust: #99511C;
+    --rust-soft: #FAECE2;
+    --amber: #85510B;
+    --amber-soft: #FAEEDA;
+    --blue: #185FA5;
+    --blue-soft: #E6F1FB;
+    --radius: 14px;
+    --radius-sm: 9px;
+    font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  @font-face {
+    font-family: 'fallback-serif';
+    src: local('Georgia');
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{padding:0 0 4rem 0;}
+  .wrap{max-width:640px;margin:0 auto;padding:0 1.1rem;}
+  .masthead{padding:2.4rem 0 1.6rem;border-bottom:1px solid var(--line);margin-bottom:1.6rem;}
+  .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);font-weight:600;margin-bottom:.5rem;}
+  h1{font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:30px;line-height:1.15;margin:0 0 .4rem;color:var(--ink);}
+  .sub{font-size:14.5px;color:var(--ink-soft);line-height:1.5;margin:0;max-width:46ch;}
+  h2{font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:19px;margin:0 0 .7rem;color:var(--ink);}
+  h3{font-size:14px;font-weight:600;margin:0 0 .5rem;color:var(--ink);}
+  p{line-height:1.55;}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:1.3rem 1.4rem;margin-bottom:1.1rem;}
+  .card.flat{background:transparent;border:none;padding:0;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;font-size:12.5px;font-weight:600;}
+  .pill.teal{background:var(--teal-soft);color:var(--teal);}
+  .pill.rust{background:var(--rust-soft);color:var(--rust);}
+  .pill.blue{background:var(--blue-soft);color:var(--blue);}
+  .pill.amber{background:var(--amber-soft);color:var(--amber);}
+  .row-between{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;}
+  .bigstat{font-family:Georgia,serif;font-size:26px;color:var(--ink);}
+  .statlabel{font-size:11.5px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.06em;}
+  .bar-track{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin:.9rem 0 1.5rem;}
+  .bar-fill{height:100%;background:var(--teal);border-radius:99px;transition:width .4s ease;}
+  button{font-family:inherit;cursor:pointer;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:14px;padding:11px 16px;transition:background .15s, transform .08s;}
+  button:hover{background:#F0EEE6;}
+  button:active{transform:scale(0.98);}
+  button.primary{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:600;}
+  button.primary:hover{background:#0C5A45;}
+  button.ghost{background:transparent;border:none;color:var(--ink-faint);font-size:12.5px;padding:6px 8px;}
+  .btn-row{display:flex;gap:10px;}
+  .btn-row button{flex:1;}
+  input[type="range"]{width:100%;accent-color:var(--teal);}
+  label.opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:7px;cursor:pointer;font-size:13.5px;line-height:1.4;}
+  label.opt:hover{background:#FAFAF6;}
+  input[type=radio],input[type=checkbox]{margin-top:2px;flex-shrink:0;accent-color:var(--teal);}
+  .check-item{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line);}
+  .check-item:last-child{border-bottom:none;}
+  .check-item .txt{font-size:14px;line-height:1.4;}
+  .check-item .tip{font-size:12px;color:var(--ink-faint);margin-top:3px;line-height:1.4;}
+  .check-item.note{border-bottom:none;padding:4px 0;}
+  .check-item.note .txt{color:var(--ink-soft);font-size:12.5px;font-style:italic;}
+  .section-label{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;margin:1.3rem 0 .6rem;color:var(--ink);}
+  .section-label .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);flex-shrink:0;}
+  .ehs-grid{display:flex;gap:6px;margin-bottom:6px;}
+  .ehs-grid button{flex:1;padding:10px 4px;font-size:13px;font-weight:600;}
+  .ehs-grid button.sel{background:var(--teal);color:#fff;border-color:var(--teal);}
+  .ehs-desc{font-size:12px;color:var(--ink-faint);min-height:16px;margin-top:4px;}
+  .foodgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.1rem;}
+  @media (max-width:480px){.foodgrid{grid-template-columns:1fr;}}
+  .micro{font-size:12px;color:var(--ink-faint);line-height:1.5;}
+  .divider{height:1px;background:var(--line);margin:1.6rem 0;}
+  textarea{width:100%;font-family:monospace;font-size:11px;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--line);resize:vertical;min-height:90px;background:#FAFAF6;color:var(--ink-soft);}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:50;}
+  .toast.show{opacity:1;}
+  details summary{cursor:pointer;font-size:13px;color:var(--teal);font-weight:600;list-style:none;display:flex;align-items:center;gap:6px;}
+  details summary::-webkit-details-marker{display:none;}
+  details[open] summary .chev{transform:rotate(90deg);}
+  .chev{transition:transform .15s;font-size:11px;}
+  .icon{width:16px;height:16px;flex-shrink:0;display:inline-block;vertical-align:-3px;}
+  footer{text-align:center;padding-top:1.5rem;}
+  canvas{max-width:100%;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="eyebrow">Programa de entrenamiento &amp; recuperación</div>
+    <h1>12 semanas — piso pélvico y función eréctil</h1>
+    <p class="sub">Progresión adaptativa, alimentación de apoyo y un registro de avance que se mide en números, no en sensaciones.</p>
+  </div>
+
+  <div id="app"></div>
+
+  <div class="divider"></div>
+
+  <details id="dataDetails">
+    <summary><span class="chev">▸</span> Respaldar o transferir tus datos a otro dispositivo</summary>
+    <div style="margin-top:.9rem;">
+      <p class="micro" style="margin-bottom:.8rem;">Tu progreso se guarda solo en este navegador/dispositivo. Para moverlo a tu celular o PC, exporta un código aquí y pégalo allá en "Importar".</p>
+      <div class="btn-row" style="margin-bottom:.8rem;">
+        <button id="btn-export">Exportar mis datos</button>
+        <button id="btn-import-toggle">Importar datos</button>
+      </div>
+      <div id="export-area" style="display:none;">
+        <textarea id="export-text" readonly></textarea>
+        <p class="micro" style="margin-top:.4rem;">Copia este texto completo y pégalo en el otro dispositivo, en el campo de importar.</p>
+      </div>
+      <div id="import-area" style="display:none;">
+        <textarea id="import-text" placeholder="Pega aquí el código exportado desde el otro dispositivo..."></textarea>
+        <button class="primary" id="btn-import-confirm" style="margin-top:.6rem;width:100%;">Importar y reemplazar mis datos actuales</button>
+      </div>
+    </div>
+  </details>
+
+  <footer class="micro">
+    Documento informativo. No reemplaza evaluación médica profesional.<br>
+    Guarda este archivo en tu dispositivo para abrirlo sin conexión.
+  </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+
+const STORAGE_KEY = 'pelvic_program_v1';
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { startDate: null, baseline: null, logs: {}, checkins: [] };
+}
+function saveState(s) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {} }
+
+let state = loadState();
+let chartInstance = null;
+let selectedEhs = null;
+
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function daysSince(dateStr){
+  if (!dateStr) return 0;
+  return Math.floor((new Date() - new Date(dateStr)) / 86400000);
+}
+function currentWeek(){
+  if (!state.startDate) return 1;
+  return Math.min(12, Math.max(1, Math.floor(daysSince(state.startDate)/7)+1));
+}
+function phaseForWeek(w){
+  if (w<=4) return { name:'Fase 1 — Fundación', range:'Semanas 1–4', cls:'teal' };
+  if (w<=8) return { name:'Fase 2 — Construcción', range:'Semanas 5–8', cls:'blue' };
+  return { name:'Fase 3 — Optimización', range:'Semanas 9–12', cls:'rust' };
+}
+
+function kegelSpec(w){
+  if (w<=2) return {reps:10,sets:3,hold:3,rest:3,label:'Kegel acostado básico'};
+  if (w<=4) return {reps:10,sets:3,hold:5,rest:5,label:'Kegel acostado'};
+  if (w<=6) return {reps:12,sets:3,hold:6,rest:6,label:'Kegel sentado'};
+  if (w<=8) return {reps:15,sets:3,hold:7,rest:7,label:'Kegel sentado / de pie'};
+  if (w<=10) return {reps:15,sets:3,hold:9,rest:9,label:'Kegel de pie avanzado'};
+  return {reps:15,sets:3,hold:10,rest:10,label:'Kegel de pie avanzado + flicks'};
+}
+function flicksSpec(w){
+  if (w<=2) return null;
+  if (w<=6) return {reps:8,sets:2,label:'Flicks (contracciones rápidas)'};
+  return {reps:10,sets:3,label:'Flicks (contracciones rápidas)'};
+}
+function bridgeSpec(w){
+  if (w<=2) return null;
+  if (w<=6) return {reps:10,sets:2,hold:5,label:'Puente de glúteos + piso pélvico'};
+  return {reps:12,sets:3,hold:8,label:'Puente de glúteos + piso pélvico'};
+}
+function squatSpec(w){
+  if (w<=4) return {reps:10,sets:2,label:'Sentadilla peso corporal'};
+  if (w<=8) return {reps:12,sets:3,label:'Sentadilla peso corporal'};
+  return {reps:15,sets:3,label:'Sentadilla profunda + contracción al subir'};
+}
+function cardioSpec(w){
+  if (w<=4) return {min:20,label:'Caminata rápida'};
+  if (w<=8) return {min:30,label:'Caminata rápida o trote suave'};
+  return {min:40,label:'Cardio moderado-alto'};
+}
+function coldSpec(w){
+  if (w<=4) return null;
+  if (w<=8) return {sec:45,label:'Ducha fría al final'};
+  return {sec:75,label:'Ducha fría al final'};
+}
+function meditationSpec(w){
+  if (w<=4) return {min:5,label:'Respiración consciente'};
+  if (w<=8) return {min:12,label:'Meditación / mindfulness'};
+  return {min:18,label:'Meditación / mindfulness'};
+}
+
+function buildSession(w, trainedToday){
+  const k = kegelSpec(w), f = flicksSpec(w), b = bridgeSpec(w), sq = squatSpec(w), c = cardioSpec(w), cold = coldSpec(w), med = meditationSpec(w);
+  const morning = [], midday = [], evening = [];
+
+  morning.push({text:`${k.label}: ${k.reps} rep x ${k.sets} series, contracción ${k.hold}s / relajación ${k.rest}s`, tip:'Exhala al contraer. No aprietes glúteos ni abdomen — el movimiento es hacia arriba y adentro.'});
+  if (cold) morning.push({text:`${cold.label}: ${cold.sec} segundos`, tip:'Sube la dopamina circulante de forma sostenida durante horas. Hazlo al final de tu ducha normal.'});
+
+  if (trainedToday){
+    midday.push({note:true, text:'Ya entrenaste hoy — esto es solo mantenimiento, no sobrecargues:'});
+    midday.push({text: f ? `${f.label}: ${f.reps} rep x ${f.sets} series` : 'Kegel rápido extra: 8 contracciones cortas', tip:'Tu sesión de fuerza ya activó el piso pélvico indirectamente (sentadillas, peso muerto, etc).'});
+  } else {
+    midday.push({text:`${c.label}: ${c.min} minutos`, tip:'Ritmo donde puedas hablar con algo de esfuerzo, no más. Mejora el flujo sanguíneo sistémico.'});
+    if (sq) midday.push({text:`${sq.label}: ${sq.reps} rep x ${sq.sets} series`, tip:'Contrae conscientemente el piso pélvico al subir de la sentadilla.'});
+    if (b) midday.push({text:`${b.label}: ${b.reps} rep x ${b.sets} series, mantén ${b.hold}s arriba`, tip:'Activa el piso pélvico ANTES de subir la cadera, no después.'});
+  }
+
+  evening.push({text:`${k.label} (sesión nocturna): ${k.reps} rep x ${k.sets} series`, tip:'La segunda sesión consolida la memoria muscular.'});
+  evening.push({text:`${med.label}: ${med.min} minutos`, tip:'Reduce cortisol, antagonista directo de testosterona. Sin pantallas después.'});
+  if (!trainedToday && f) evening.push({text:`${f.label} extra: ${f.reps} rep x ${f.sets}`, tip:'Entrena la velocidad de respuesta muscular del piso pélvico.'});
+
+  return { morning, midday, evening };
+}
+
+function foodTip(w){
+  const tips = [
+    {food:'Espinaca o rúcula', why:'ricas en nitratos, precursores de óxido nítrico'},
+    {food:'Sandía o pepino', why:'aportan citrulina natural, mejora flujo sanguíneo'},
+    {food:'Nueces (60 g)', why:'arginina + omega-3 — mejora función orgásmica (Nutrients, 2019)'},
+    {food:'Arándanos o moras', why:'flavonoides asociados a -9–11% riesgo de DE (Harvard, 25.000 hombres)'},
+    {food:'Pescado graso (salmón/sardina)', why:'omega-3 EPA/DHA, protección endotelial'},
+    {food:'Ajo (1-2 dientes crudos)', why:'alicina estimula producción de óxido nítrico'},
+    {food:'Chocolate negro >70% (20-30 g)', why:'epicatequinas, mejora función endotelial'},
+  ];
+  return tips[(w-1) % tips.length];
+}
+function supplementNote(w){
+  if (w<3) return 'Todavía sin suplementos — primero consolida alimentación y ejercicio (semanas 1-2).';
+  if (w<5) return 'Si no hay contraindicación médica: L-Citrulina 1.5 g/día (750 mg + 750 mg) tiene el mejor perfil de seguridad para iniciar.';
+  if (w<9) return 'Evaluar agregar Panax Ginseng 900 mg x 2-3 veces/día — el nutracéutico con evidencia más sólida (mínimo 8 semanas).';
+  return 'Mantén lo que te haya funcionado. Considera examen de Vitamina D y zinc sérico antes de suplementar esos específicamente.';
+}
+
+const EHS = [
+  {v:1, label:'Crece pero no se endurece'},
+  {v:2, label:'Se endurece pero no lo suficiente para penetrar'},
+  {v:3, label:'Suficientemente duro para penetrar, no completamente rígido'},
+  {v:4, label:'Completamente rígido'},
+];
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+function render(){
+  const app = document.getElementById('app');
+  if (!state.startDate){
+    app.innerHTML = renderOnboarding();
+    attachOnboardingEvents();
+    return;
+  }
+  const w = currentWeek();
+  const phase = phaseForWeek(w);
+  const today = todayISO();
+  const todayLog = state.logs[today];
+
+  app.innerHTML = `
+    ${renderHeader(w, phase)}
+    ${state.checkins.length ? renderChartCard() : ''}
+    ${todayLog ? renderTodayBanner(todayLog) : renderTrainedAsk()}
+    <div id="session-container"></div>
+    ${renderFoodSupp(w)}
+    ${renderWeeklyCheckin(w)}
+  `;
+  attachEvents(w);
+  if (todayLog){
+    document.getElementById('session-container').innerHTML = renderSessionView(todayLog.session, today);
+    attachCheckEvents();
+  }
+  if (state.checkins.length) setTimeout(renderChart, 0);
+}
+
+function renderHeader(w, phase){
+  const d = daysSince(state.startDate);
+  const pct = Math.min(100, Math.round((d/84)*100));
+  return `
+  <div class="card flat">
+    <div class="row-between" style="margin-bottom:.3rem;">
+      <div>
+        <div class="micro" style="margin-bottom:4px;">Semana ${w} de 12 · Día ${d+1}</div>
+        <span class="pill ${phase.cls}">${phase.name} · ${phase.range}</span>
+      </div>
+      <div style="text-align:right;">
+        <div class="bigstat">${pct}%</div>
+        <div class="statlabel">del programa</div>
+      </div>
+    </div>
+    <div class="bar-track"><div class="bar-fill" style="width:${pct}%;"></div></div>
+  </div>`;
+}
+
+function renderChartCard(){
+  return `
+  <div class="card">
+    <h3>Tu evolución medible</h3>
+    <div style="position:relative; height:210px;">
+      <canvas id="progressChart" role="img" aria-label="Gráfico de evolución de firmeza de erección y segundos de Kegel sostenido por semana">Datos de progreso por semana.</canvas>
+    </div>
+  </div>`;
+}
+
+function renderTrainedAsk(){
+  return `
+  <div class="card">
+    <h3>¿Hiciste ejercicio hoy (gym, fuerza, deporte)?</h3>
+    <div class="btn-row">
+      <button class="primary" id="btn-trained-yes">Sí, ya entrené</button>
+      <button id="btn-trained-no">No, todavía no</button>
+    </div>
+  </div>`;
+}
+
+function renderTodayBanner(log){
+  return `
+  <div class="card" style="background:var(--teal-soft);border-color:var(--teal-soft);">
+    <span style="font-size:13.5px;color:var(--teal);font-weight:600;">Sesión de hoy lista${log.trained ? ' (adaptada porque entrenaste)' : ''}.</span>
+    <span style="font-size:13px;color:var(--teal);"> Marca lo que vayas completando.</span>
+  </div>`;
+}
+
+function renderSessionView(session, dateKey){
+  function block(title, items){
+    if (!items.length) return '';
+    return `
+    <div class="section-label"><span class="dot"></span>${title}</div>
+    ${items.map((it, idx) => {
+      if (it.note) return `<div class="check-item note"><div class="txt">${it.text}</div></div>`;
+      const id = 'chk-'+dateKey+'-'+title.replace(/\\s/g,'')+'-'+idx;
+      const checked = (state.logs[dateKey].done && state.logs[dateKey].done[id]) ? 'checked' : '';
+      return `
+      <label class="check-item" style="cursor:pointer;">
+        <input type="checkbox" class="session-check" data-id="${id}" data-date="${dateKey}" ${checked}>
+        <div>
+          <div class="txt">${it.text}</div>
+          ${it.tip ? `<div class="tip">${it.tip}</div>` : ''}
+        </div>
+      </label>`;
+    }).join('')}`;
+  }
+  return `
+  <div class="card">
+    ${block('Mañana', session.morning)}
+    ${block('Mediodía / Tarde', session.midday)}
+    ${block('Noche', session.evening)}
+  </div>`;
+}
+
+function renderFoodSupp(w){
+  const f = foodTip(w);
+  const s = supplementNote(w);
+  return `
+  <div class="foodgrid">
+    <div class="card" style="background:var(--teal-soft);margin-bottom:0;">
+      <div class="micro" style="color:var(--teal);font-weight:600;margin-bottom:5px;">ALIMENTO DE HOY</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:2px;color:var(--teal);">${f.food}</div>
+      <div style="font-size:12.5px;color:var(--teal);opacity:.85;">${f.why}</div>
+    </div>
+    <div class="card" style="background:var(--amber-soft);margin-bottom:0;">
+      <div class="micro" style="color:var(--amber);font-weight:600;margin-bottom:5px;">SUPLEMENTACIÓN</div>
+      <div style="font-size:13px;color:var(--amber);">${s}</div>
+    </div>
+  </div>`;
+}
+
+function renderWeeklyCheckin(w){
+  const last = state.checkins[state.checkins.length-1];
+  const lastWeek = last ? last.week : 0;
+  if (lastWeek >= w){
+    return `<div class="micro" style="padding:.4rem 0;">Ya registraste tu evaluación de la semana ${w}. Vuelve la próxima semana.</div>`;
+  }
+  return `
+  <div class="card">
+    <h3>Evaluación de la semana ${w}</h3>
+    <p class="micro" style="margin:0 0 1rem;">Esto es lo que realmente mide tu progreso — no solo cómo te sientes.</p>
+
+    <div style="margin-bottom:1rem;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Firmeza de erección (escala EHS)</div>
+      <div class="ehs-grid">
+        ${EHS.map(e=>`<button class="ehs-btn" data-v="${e.v}">${e.v}</button>`).join('')}
+      </div>
+      <div class="ehs-desc" id="ehs-desc"></div>
+    </div>
+
+    <div style="margin-bottom:1.1rem;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Segundos máximos de Kegel sostenido sin fatiga</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <input type="range" id="kegel-range" min="2" max="20" step="1" value="${state.baseline ? state.baseline.kegelSec : 5}">
+        <span id="kegel-out" style="font-size:14px;font-weight:600;min-width:36px;">${state.baseline ? state.baseline.kegelSec : 5}s</span>
+      </div>
+    </div>
+
+    <button class="primary" id="btn-save-checkin" style="width:100%;">Guardar evaluación de la semana ${w}</button>
+  </div>`;
+}
+
+function renderOnboarding(){
+  return `
+  <div class="card">
+    <h2>Antes de empezar: tu línea base</h2>
+    <p class="micro" style="margin:0 0 1.2rem;">Esto se compara contigo mismo cada semana. Sin esto no hay forma de medir progreso real.</p>
+
+    <div style="margin-bottom:1.2rem;">
+      <div style="font-size:14px;font-weight:600;margin-bottom:8px;">¿Cómo describirías tu firmeza de erección actual?</div>
+      ${EHS.map(e=>`
+        <label class="opt">
+          <input type="radio" name="ehs-base" value="${e.v}">
+          <div><strong>${e.v}</strong> — ${e.label}</div>
+        </label>`).join('')}
+    </div>
+
+    <div style="margin-bottom:1.3rem;">
+      <div style="font-size:14px;font-weight:600;margin-bottom:8px;">Sin práctica previa, ¿cuántos segundos puedes sostener un Kegel sin que se fatigue?</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <input type="range" id="base-kegel-range" min="1" max="15" step="1" value="4">
+        <span id="base-kegel-out" style="font-size:14px;font-weight:600;min-width:32px;">4s</span>
+      </div>
+      <p class="micro" style="margin-top:5px;">Si no sabes, prueba ahora: acostado, contrae como si detuvieras el flujo de orina, cuenta hasta que se relaje solo.</p>
+    </div>
+
+    <button class="primary" id="btn-start-program" style="width:100%;">Comenzar programa de 12 semanas</button>
+  </div>`;
+}
+
+function attachOnboardingEvents(){
+  const slider = document.getElementById('base-kegel-range');
+  const out = document.getElementById('base-kegel-out');
+  slider.addEventListener('input', ()=>{ out.textContent = slider.value+'s'; });
+
+  document.getElementById('btn-start-program').addEventListener('click', ()=>{
+    const r = document.querySelector('input[name="ehs-base"]:checked');
+    const ehsVal = r ? parseInt(r.value) : 2;
+    const kegelVal = parseInt(slider.value);
+    state.startDate = todayISO();
+    state.baseline = { ehs: ehsVal, kegelSec: kegelVal, date: todayISO() };
+    state.checkins.push({ week:0, ehs: ehsVal, kegelSec: kegelVal, date: todayISO() });
+    saveState(state);
+    render();
+  });
+}
+
+function attachCheckEvents(){
+  document.querySelectorAll('.session-check').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      const date = cb.getAttribute('data-date');
+      const id = cb.getAttribute('data-id');
+      if (!state.logs[date].done) state.logs[date].done = {};
+      state.logs[date].done[id] = cb.checked;
+      saveState(state);
+    });
+  });
+}
+
+function attachEvents(w){
+  const yesBtn = document.getElementById('btn-trained-yes');
+  const noBtn = document.getElementById('btn-trained-no');
+  if (yesBtn) yesBtn.addEventListener('click', ()=>generateSession(w, true));
+  if (noBtn) noBtn.addEventListener('click', ()=>generateSession(w, false));
+
+  selectedEhs = null;
+  document.querySelectorAll('.ehs-btn').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('.ehs-btn').forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel');
+      selectedEhs = parseInt(b.getAttribute('data-v'));
+      document.getElementById('ehs-desc').textContent = EHS.find(e=>e.v===selectedEhs).label;
+    });
+  });
+
+  const kRange = document.getElementById('kegel-range');
+  if (kRange){
+    const kOut = document.getElementById('kegel-out');
+    kRange.addEventListener('input', ()=>{ kOut.textContent = kRange.value+'s'; });
+  }
+
+  const saveBtn = document.getElementById('btn-save-checkin');
+  if (saveBtn) saveBtn.addEventListener('click', ()=>{
+    if (selectedEhs === null){ showToast('Selecciona tu nivel EHS antes de guardar'); return; }
+    const kegelSec = parseInt(document.getElementById('kegel-range').value);
+    state.checkins.push({ week: w, ehs: selectedEhs, kegelSec, date: todayISO() });
+    saveState(state);
+    showToast('Evaluación guardada');
+    render();
+  });
+}
+
+function generateSession(w, trained){
+  const session = buildSession(w, trained);
+  const today = todayISO();
+  state.logs[today] = { trained, session, done: {} };
+  saveState(state);
+  render();
+}
+
+function renderChart(){
+  const canvas = document.getElementById('progressChart');
+  if (!canvas) return;
+  if (chartInstance) chartInstance.destroy();
+  const labels = state.checkins.map(c => c.week===0 ? 'Inicio' : 'Sem '+c.week);
+  const ehsData = state.checkins.map(c => c.ehs);
+  const kegelData = state.checkins.map(c => c.kegelSec);
+  chartInstance = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label:'Firmeza (EHS 1-4)', data: ehsData, borderColor:'#185FA5', backgroundColor:'#185FA5', pointStyle:'circle', yAxisID:'y1', tension:.25 },
+        { label:'Kegel sostenido (s)', data: kegelData, borderColor:'#99511C', backgroundColor:'#99511C', borderDash:[6,3], pointStyle:'rectRot', yAxisID:'y2', tension:.25 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:true, position:'bottom', labels:{ boxWidth:10, font:{size:11} } } },
+      scales:{
+        y1:{ type:'linear', position:'left', min:0, max:4, ticks:{stepSize:1}, title:{display:true,text:'EHS',font:{size:11}} },
+        y2:{ type:'linear', position:'right', min:0, suggestedMax:20, grid:{drawOnChartArea:false}, title:{display:true,text:'Segundos',font:{size:11}} }
+      }
+    }
+  });
+}
+
+document.getElementById('btn-export').addEventListener('click', ()=>{
+  const data = JSON.stringify(state);
+  const encoded = btoa(unescape(encodeURIComponent(data)));
+  document.getElementById('export-area').style.display = 'block';
+  document.getElementById('import-area').style.display = 'none';
+  document.getElementById('export-text').value = encoded;
+  document.getElementById('export-text').select();
+});
+
+document.getElementById('btn-import-toggle').addEventListener('click', ()=>{
+  document.getElementById('import-area').style.display = 'block';
+  document.getElementById('export-area').style.display = 'none';
+});
+
+document.getElementById('btn-import-confirm').addEventListener('click', ()=>{
+  const txt = document.getElementById('import-text').value.trim();
+  if (!txt){ showToast('Pega un código primero'); return; }
+  try {
+    const decoded = decodeURIComponent(escape(atob(txt)));
+    const parsed = JSON.parse(decoded);
+    if (!('startDate' in parsed) || !('checkins' in parsed)) throw new Error('formato inválido');
+    state = parsed;
+    saveState(state);
+    showToast('Datos importados correctamente');
+    document.getElementById('import-area').style.display = 'none';
+    render();
+  } catch(e){
+    showToast('Código inválido — revisa que lo copiaste completo');
+  }
+});
+
+render();
+</script>
+</body>
+</html>
