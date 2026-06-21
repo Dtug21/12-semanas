@@ -680,9 +680,9 @@ function renderNutriPhaseRow(item) {
   return `<div class="nutri-row">
     <div class="nutri-row-icon">${item.icon}</div>
     <div class="nutri-row-body">
-      <div class="nutri-row-name">${item.name}</div>
-      <div class="nutri-row-por">${item.por}</div>
-      <div class="nutri-row-comp">${item.comp}</div>
+      <div class="nutri-row-name">${escHtml(item.name)}</div>
+      <div class="nutri-row-por">${escHtml(item.por)}</div>
+      <div class="nutri-row-comp">${escHtml(item.comp)}</div>
     </div>
   </div>`;
 }
@@ -692,10 +692,10 @@ function renderNutriFases() {
   <div class="nutri-callout tip"><strong>¿Por qué este orden?</strong> Empezar por nitratos (efecto vascular inmediato) y sumar flavonoides y arginina dietaria da una base sólida de 2 semanas antes de suplementos concentrados, cuando aparecen las interacciones más relevantes.</div>`;
   NUTRI_PHASES.forEach(ph => {
     html += `<div class="no-section">
-      <span class="nutri-phase-pill ${ph.cls}">${ph.phase}</span>
+      <span class="nutri-phase-pill ${ph.cls}">${escHtml(ph.phase)}</span>
       <div class="card" style="padding:.5rem 1.1rem .6rem;">
-        <h3 style="margin-bottom:4px;">${ph.title}</h3>
-        <div class="micro" style="margin-bottom:.6rem;">${ph.note}</div>
+        <h3 style="margin-bottom:4px;">${escHtml(ph.title)}</h3>
+        <div class="micro" style="margin-bottom:.6rem;">${escHtml(ph.note)}</div>
         ${ph.items.map(renderNutriPhaseRow).join('')}
       </div>
     </div>`;
@@ -708,11 +708,11 @@ function renderNutriCruces() {
   html += `<div class="overline" style="margin-bottom:.5rem;">Sinergias comprobadas</div>`;
   NUTRI_SYNERGIES.forEach(s => {
     html += `<div class="card" style="margin-bottom:.7rem;">
-      <span class="nutri-tag sin">✓ ${s.tag}</span>
-      <div class="nutri-cross-title">${s.title}</div>
-      <div class="nutri-cross-sub">${s.why}</div>
-      <div class="micro" style="line-height:1.6;">${s.detail}</div>
-      ${s.result?`<div class="micro" style="margin-top:5px;color:var(--success);">${s.result}</div>`:''}
+      <span class="nutri-tag sin">✓ ${escHtml(s.tag)}</span>
+      <div class="nutri-cross-title">${escHtml(s.title)}</div>
+      <div class="nutri-cross-sub">${escHtml(s.why)}</div>
+      <div class="micro" style="line-height:1.6;">${escHtml(s.detail)}</div>
+      ${s.result?`<div class="micro" style="margin-top:5px;color:var(--success);">${escHtml(s.result)}</div>`:''}
     </div>`;
   });
   html += `<div class="overline" style="margin:.4rem 0 .5rem;">Antagonismos — cuándo un compuesto reduce el efecto de otro</div>`;
@@ -720,7 +720,7 @@ function renderNutriCruces() {
     <table class="nutri-ant-table">
       <thead><tr><th>Combinación</th><th>Qué pasa</th><th>Cómo evitarlo</th></tr></thead>
       <tbody>${NUTRI_ANTAGONISMS.map(a=>`<tr>
-        <td>${a.combo}</td><td>${a.effect}</td><td style="color:var(--primary);">${a.avoid}</td>
+        <td>${escHtml(a.combo)}</td><td>${escHtml(a.effect)}</td><td style="color:var(--primary);">${escHtml(a.avoid)}</td>
       </tr>`).join('')}</tbody>
     </table>
   </div>`;
@@ -748,8 +748,8 @@ function renderNutriProtocolo() {
       <div class="nutri-seq-num">${s.weeks}</div>
       <div class="nutri-seq-body">
         <div class="nutri-seq-label">Semana${s.weeks.includes('-')?'s':''} ${s.weeks}</div>
-        <div class="nutri-seq-intro">${s.intro}</div>
-        <div class="nutri-seq-avoid">⚠ ${s.avoid}</div>
+        <div class="nutri-seq-intro">${escHtml(s.intro)}</div>
+        <div class="nutri-seq-avoid">⚠ ${escHtml(s.avoid)}</div>
       </div>
     </div>`;
   });
@@ -758,10 +758,10 @@ function renderNutriProtocolo() {
   html += `<div class="overline" style="margin:.9rem 0 .5rem;">Suplementos nuevos con evidencia (V2)</div>`;
   NUTRI_SUPPS.forEach(s => {
     html += `<div class="card" style="margin-bottom:.7rem;">
-      <span class="nutri-supp-ev ${s.ev}">${s.evLabel}</span>
-      <div class="nutri-cross-title">${s.name}</div>
-      <div class="nutri-cross-sub" style="margin-bottom:8px;">${s.summary}</div>
-      <dl class="nutri-kv">${s.fields.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+      <span class="nutri-supp-ev ${s.ev}">${escHtml(s.evLabel)}</span>
+      <div class="nutri-cross-title">${escHtml(s.name)}</div>
+      <div class="nutri-cross-sub" style="margin-bottom:8px;">${escHtml(s.summary)}</div>
+      <dl class="nutri-kv">${s.fields.map(([k,v])=>`<dt>${escHtml(k)}</dt><dd>${escHtml(v)}</dd>`).join('')}</dl>
     </div>`;
   });
   html += `<div class="overline" style="margin:.4rem 0 .5rem;">Lo que la evidencia descarta o señala como riesgoso</div>`;
@@ -769,8 +769,8 @@ function renderNutriProtocolo() {
   NUTRI_AVOID.forEach(a => {
     html += `<div class="nutri-row">
       <div class="nutri-row-body">
-        <div class="nutri-row-name" style="color:var(--danger);">${a.name}</div>
-        <div class="nutri-row-note">${a.why}</div>
+        <div class="nutri-row-name" style="color:var(--danger);">${escHtml(a.name)}</div>
+        <div class="nutri-row-note">${escHtml(a.why)}</div>
       </div>
     </div>`;
   });
@@ -783,17 +783,35 @@ function stars(n) {
   return Array.from({length:5},(_,i)=>`<span class="star ${i<n?'on':'off'}">${i<n?'★':'☆'}</span>`).join('');
 }
 
+function escHtml(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function ensureTodayLog(w) {
+  const today = todayISO();
+  if (!state.logs[today]) {
+    state.logs[today] = { trainedTypes: [], session: buildSession(w, []), done: {} };
+    saveState(state);
+    return state.logs[today];
+  }
+  const log = state.logs[today];
+  if (!log.done) log.done = {};
+  if (!Array.isArray(log.trainedTypes)) log.trainedTypes = [];
+  const s = log.session;
+  if (!s || !Array.isArray(s.morning) || !Array.isArray(s.midday) || !Array.isArray(s.evening)) {
+    log.session = buildSession(w, log.trainedTypes);
+    saveState(state);
+  }
+  return log;
+}
+
 // ── RENDER HOY ──
 function renderHoy() {
   const w=currentWeek(), phase=phaseForWeek(w), today=todayISO();
   const streak=calcStreak(), gap=daysSinceLastLog();
   const d=daysSince(state.startDate), pct=Math.min(100,Math.round(d/84*100));
 
-  if (!state.logs[today]) {
-    state.logs[today]={trainedTypes:[],session:buildSession(w,[]),done:{}};
-    saveState(state);
-  }
-  const log=state.logs[today];
+  const log = ensureTodayLog(w);
   const types=log.trainedTypes||[];
 
   document.getElementById('hoy-sub').textContent=`Semana ${w} · Día ${d+1} · ${phase.name}`;
@@ -863,6 +881,9 @@ function renderTrainNote(types) {
 const checkSVG=`<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polyline points="1.5,5.5 4,8.5 9.5,2.5" stroke="#0B0B0C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 function renderSessionView(session, dateKey) {
+  if (!session || !Array.isArray(session.morning) || !Array.isArray(session.midday) || !Array.isArray(session.evening)) {
+    return `<div class="card"><div class="micro" style="color:var(--text-2);">Rutina del día reconstruida — recarga si no ves los ejercicios.</div></div>`;
+  }
   function block(title, badgeCls, emoji, items) {
     if (!items.length) return '';
     const real=items.filter(i=>!i.note);
@@ -1010,7 +1031,7 @@ async function setupNotifications() {
 }
 
 async function requestNotifPermission() {
-  if (!('Notification' in window)) return false;
+  if (!('Notification' in window) || typeof Notification.requestPermission !== 'function') return false;
   if (Notification.permission==='granted') return true;
   const p = await Notification.requestPermission();
   return p==='granted';
@@ -1675,20 +1696,38 @@ function showToast(msg) {
 }
 
 // ── INIT ──
-if (!state.startDate) renderOnboarding();
-else {
-  renderTab('hoy');
-  showInAppBanner();
-  setupNotifications().then(()=>{
-    if (Notification.permission==='granted') {
-      scheduleNotifications();
-    } else if (Notification.permission==='default') {
-      // Pedir permiso después de 3s para no interrumpir el primer render
-      setTimeout(async ()=>{
-        const granted = await requestNotifPermission();
-        if (granted) { scheduleNotifications(); showToast('Notificaciones activadas ✓'); }
-      }, 3000);
-    }
+try {
+  if (!state.startDate) renderOnboarding();
+  else {
+    renderTab('hoy');
+    showInAppBanner();
+    setupNotifications().then(()=>{
+      if (Notification.permission==='granted') {
+        scheduleNotifications();
+      } else if (Notification.permission==='default') {
+        setTimeout(async ()=>{
+          const granted = await requestNotifPermission();
+          if (granted) { scheduleNotifications(); showToast('Notificaciones activadas ✓'); }
+        }, 3000);
+      }
+    });
+  }
+} catch (e) {
+  console.error('Init error:', e);
+  document.getElementById('hoy-sub').textContent = 'Error al cargar';
+  document.getElementById('hoy-content').innerHTML = `<div class="card" style="text-align:center;padding:1.5rem;">
+    <div style="font-size:32px;margin-bottom:.6rem;">⚠</div>
+    <h3 style="margin-bottom:.4rem;">No se pudo cargar el programa</h3>
+    <p class="micro" style="margin-bottom:1rem;">Los datos guardados pueden estar dañados. Puedes reiniciar sin perder nada crítico.</p>
+    <button class="primary" id="btn-recover" style="width:100%;">Reparar y continuar</button>
+  </div>`;
+  document.getElementById('btn-recover')?.addEventListener('click', ()=>{
+    const today = todayISO();
+    const w = currentWeek();
+    if (state.startDate) ensureTodayLog(w);
+    else state = { startDate:null, baseline:null, logs:{}, checkins:[], foodPrefs:{}, foodLog:{}, dailyLog:{} };
+    saveState(state);
+    location.reload();
   });
 }
 </script>
