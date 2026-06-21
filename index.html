@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>12 Semanas — Piso Pélvico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary:        #C6F24E;
+  --primary-dim:    rgba(198,242,78,0.10);
+  --primary-border: rgba(198,242,78,0.20);
+  --accent-text:    #0B0B0C;
+  --success:        #54D27A;
+  --success-dim:    rgba(84,210,122,0.10);
+  --success-border: rgba(84,210,122,0.20);
+  --warning:        #FBA94C;
+  --warning-dim:    rgba(251,169,76,0.10);
+  --danger:         #FF5A4D;
+  --danger-dim:     rgba(255,90,77,0.10);
+  --danger-border:  rgba(255,90,77,0.20);
+  --blue:           #4D8EFF;
+  --blue-dim:       rgba(77,142,255,0.10);
+  --bg:             #0B0B0C;
+  --card:           #161618;
+  --card-el:        #1F1F22;
+  --border:         rgba(255,255,255,0.07);
+  --border-s:       rgba(255,255,255,0.13);
+  --text-1:         #FAFAFA;
+  --text-2:         #A1A1A6;
+  --text-3:         #6B6B70;
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px;
+  --tab-h: 72px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  background:var(--bg);color:var(--text-1);
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden; /* no body scroll — each tab scrolls */
+}
+
+/* ── APP SHELL ── */
+.app-shell{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;position:relative;}
+
+/* ── TAB PAGES ── */
+.page{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  padding:0 1rem 1.5rem;
+  display:none;
+  -webkit-overflow-scrolling:touch;
+}
+.page.active{display:block;}
+.page-header{padding:1.6rem 0 1rem;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:1px solid var(--border);margin:0 -1rem;padding-left:1rem;padding-right:1rem;}
+.page-title{font-size:20px;font-weight:600;color:var(--text-1);letter-spacing:-0.4px;}
+.page-sub{font-size:12px;color:var(--text-3);margin-top:2px;}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{
+  height:var(--tab-h);
+  background:var(--card);
+  border-top:1px solid var(--border);
+  display:flex;align-items:stretch;
+  flex-shrink:0;
+  padding-bottom:env(safe-area-inset-bottom, 0px);
+}
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:5px;cursor:pointer;border:none;background:transparent;
+  color:var(--text-3);font-family:inherit;font-size:11px;font-weight:500;
+  letter-spacing:.3px;transition:color .15s;padding:8px 0 4px;
+  min-height:0;
+}
+.nav-btn .nav-icon{font-size:24px;line-height:1.1;display:block;}
+.nav-btn.active{color:var(--primary);}
+.nav-btn:hover{color:var(--text-2);}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.1rem;margin-bottom:.8rem;}
+.card.elevated{background:var(--card-el);}
+h3{font-size:14px;font-weight:600;color:var(--text-1);}
+.overline{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-3);}
+.micro{font-size:12px;color:var(--text-3);line-height:1.6;}
+
+/* ── PROGRESS HEADER (Hoy tab) ── */
+.progress-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.1rem;margin-bottom:.8rem;}
+.progress-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.8rem;}
+.week-meta{font-size:12px;color:var(--text-3);margin-bottom:.4rem;}
+.big-pct{font-size:30px;font-weight:600;color:var(--primary);letter-spacing:-1px;line-height:1;font-variant-numeric:tabular-nums;}
+.big-pct-label{font-size:10px;color:var(--text-3);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;font-weight:600;}
+.bar-track{height:3px;background:var(--border-s);border-radius:99px;overflow:hidden;}
+.bar-fill{height:100%;background:var(--primary);border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+.phase-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:11.5px;font-weight:600;}
+.phase-pill.p1{background:var(--primary-dim);color:var(--primary);border:1px solid var(--primary-border);}
+.phase-pill.p2{background:var(--success-dim);color:var(--success);border:1px solid var(--success-border);}
+.phase-pill.p3{background:var(--warning-dim);color:var(--warning);border:1px solid rgba(251,169,76,0.2);}
+
+/* ── STATS ROW ── */
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:.8rem;}
+.stat-chip{background:var(--card-el);border:1px solid var(--border);border-radius:var(--r-md);padding:.75rem .5rem;text-align:center;}
+.stat-chip .val{font-size:19px;font-weight:600;color:var(--primary);line-height:1;font-variant-numeric:tabular-nums;}
+.stat-chip .val.muted{color:var(--text-2);}
+.stat-chip .lbl{font-size:10px;color:var(--text-3);margin-top:3px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;}
+
+/* ── 7-DAY DOTS ── */
+.week-dots-wrap{margin-bottom:.8rem;}
+.week-dots-labels{display:flex;gap:5px;margin-bottom:4px;}
+.week-dots-labels span{flex:1;font-size:10px;color:var(--text-3);text-align:center;font-weight:500;}
+.week-dots{display:flex;gap:5px;}
+.dot-day{flex:1;height:4px;border-radius:99px;background:var(--border-s);}
+.dot-day.done{background:var(--primary);}
+.dot-day.today-mark{outline:2px solid var(--primary);outline-offset:2px;}
+
+/* ── GAP BANNER ── */
+.gap-banner{display:flex;align-items:flex-start;gap:9px;background:var(--warning-dim);border:1px solid rgba(251,169,76,0.2);border-radius:var(--r-md);padding:.85rem 1rem;margin-bottom:.8rem;}
+.gap-banner .g-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
+.gap-banner .g-txt{font-size:13px;color:var(--warning);font-weight:600;}
+.gap-banner .g-sub{font-size:11.5px;color:var(--text-3);margin-top:2px;}
+
+/* ── TRAINING SELECTOR ── */
+.train-card h3{margin-bottom:.25rem;}
+.train-scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-top:.8rem;}
+.train-scroll::-webkit-scrollbar{display:none;}
+.train-chip{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:.65rem .85rem;border:1.5px solid var(--border-s);border-radius:var(--r-md);
+  cursor:pointer;transition:all .12s;background:var(--card-el);
+  font-size:11.5px;font-weight:500;color:var(--text-3);white-space:nowrap;flex-shrink:0;
+  font-family:inherit;
+}
+.train-chip .tc-icon{font-size:18px;line-height:1;}
+.train-chip:hover{border-color:var(--text-2);color:var(--text-2);}
+.train-chip.sel-legs  {border-color:var(--success);color:var(--success);background:var(--success-dim);}
+.train-chip.sel-cardio{border-color:var(--blue);color:var(--blue);background:var(--blue-dim);}
+.train-chip.sel-other {border-color:var(--primary);color:var(--primary);background:var(--primary-dim);}
+.train-note{font-size:12px;color:var(--text-3);margin-top:.6rem;line-height:1.5;}
+.train-note.has-sel{color:var(--text-2);}
+
+/* ── SESSION BLOCKS ── */
+.session-block{margin-bottom:1.1rem;}
+.session-block:last-child{margin-bottom:0;}
+.block-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;}
+.block-badge{padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600;letter-spacing:.5px;}
+.block-badge.morning{background:rgba(255,208,96,0.1);color:#FFD060;border:1px solid rgba(255,208,96,0.18);}
+.block-badge.midday{background:var(--primary-dim);color:var(--primary);border:1px solid var(--primary-border);}
+.block-badge.evening{background:rgba(155,114,255,0.1);color:#9B72FF;border:1px solid rgba(155,114,255,0.18);}
+.block-prog-txt{font-size:10px;color:var(--text-3);font-variant-numeric:tabular-nums;}
+.block-bar{height:2px;background:var(--border-s);border-radius:99px;overflow:hidden;margin-bottom:.5rem;}
+.block-bar-fill{height:100%;background:var(--primary);border-radius:99px;transition:width .3s;}
+
+.check-item{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);}
+.check-item:last-child{border-bottom:none;}
+.check-item.note{padding:4px 0;border-bottom:none;}
+.check-item.note .txt{font-size:12px;color:var(--text-3);font-style:italic;}
+.chk-box{width:18px;height:18px;flex-shrink:0;margin-top:1px;border:1.5px solid var(--border-s);border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .12s;background:transparent;}
+.chk-box svg{display:none;}
+.chk-box.done{background:var(--primary);border-color:var(--primary);}
+.chk-box.done svg{display:block;}
+input[type=checkbox]{display:none;}
+label.check-item{cursor:pointer;}
+label.check-item:hover .chk-box{border-color:var(--primary);}
+.chk-label{flex:1;}
+.chk-label .txt{font-size:13.5px;color:var(--text-1);line-height:1.45;font-weight:500;}
+.chk-label .tip{font-size:11.5px;color:var(--text-3);margin-top:2px;line-height:1.5;}
+.check-item.completed .chk-label .txt{text-decoration:line-through;color:var(--text-3);}
+
+/* ── NUTRICIÓN TAB ── */
+.no-section{margin-bottom:1.2rem;}
+.no-section-title{display:flex;align-items:center;gap:8px;margin-bottom:.7rem;}
+.no-section-title .ns-label{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-3);}
+.benefit-dots{display:flex;gap:3px;}
+.benefit-dot{width:7px;height:7px;border-radius:50%;background:var(--border-s);}
+.benefit-dot.on-5{background:var(--primary);}
+.benefit-dot.on-4{background:var(--primary);}
+.benefit-dot.on-3{background:var(--success);}
+.benefit-dot.on-2{background:var(--warning);}
+.benefit-dot.on-1{background:var(--text-3);}
+
+.food-item{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:10px 0;border-bottom:1px solid var(--border);
+}
+.food-item:last-child{border-bottom:none;}
+.food-icon{font-size:22px;flex-shrink:0;width:32px;text-align:center;}
+.food-body{flex:1;}
+.food-name-row{display:flex;align-items:center;gap:7px;margin-bottom:3px;}
+.food-item-name{font-size:13.5px;font-weight:600;color:var(--text-1);}
+.food-por{font-size:11px;color:var(--primary);background:var(--primary-dim);border:1px solid var(--primary-border);border-radius:99px;padding:1px 7px;font-weight:600;}
+.food-mech{font-size:11px;color:var(--success);margin-bottom:2px;font-weight:500;}
+.food-note{font-size:11.5px;color:var(--text-3);line-height:1.5;}
+.stars{display:flex;gap:2px;align-items:center;}
+.star{font-size:10px;}
+.star.on{color:var(--primary);}
+.star.off{color:var(--border-s);}
+
+/* ── NUTRICIÓN GUÍA (ficha V2) ── */
+.nutri-intro{font-size:12px;color:var(--text-2);line-height:1.65;margin-bottom:.9rem;}
+.nutri-phase-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:10.5px;font-weight:600;letter-spacing:.3px;margin-bottom:.55rem;}
+.nutri-phase-pill.p1{background:var(--primary-dim);color:var(--primary);border:1px solid var(--primary-border);}
+.nutri-phase-pill.p2{background:var(--success-dim);color:var(--success);border:1px solid var(--success-border);}
+.nutri-phase-pill.p3{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(77,142,255,.2);}
+.nutri-phase-pill.p4{background:var(--warning-dim);color:var(--warning);border:1px solid rgba(251,169,76,.2);}
+.nutri-row{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.nutri-row:last-child{border-bottom:none;}
+.nutri-row-icon{font-size:20px;flex-shrink:0;width:28px;text-align:center;}
+.nutri-row-body{flex:1;min-width:0;}
+.nutri-row-name{font-size:13px;font-weight:600;color:var(--text-1);margin-bottom:2px;}
+.nutri-row-por{font-size:10.5px;color:var(--primary);font-weight:600;margin-bottom:2px;}
+.nutri-row-comp{font-size:11px;color:var(--success);font-weight:500;margin-bottom:2px;}
+.nutri-row-note{font-size:11px;color:var(--text-3);line-height:1.5;}
+.nutri-callout{background:var(--card-el);border:1px solid var(--border);border-radius:var(--r-md);padding:.75rem .9rem;margin-bottom:.8rem;font-size:11.5px;color:var(--text-2);line-height:1.65;}
+.nutri-callout.warn{border-color:var(--warning);background:var(--warning-dim);}
+.nutri-callout.tip{border-color:var(--primary-border);background:var(--primary-dim);}
+.nutri-callout strong{color:var(--text-1);font-weight:600;}
+.nutri-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;margin-bottom:6px;}
+.nutri-tag.sin{background:var(--success-dim);color:var(--success);border:1px solid var(--success-border);}
+.nutri-tag.ant{background:var(--danger-dim);color:var(--danger);border:1px solid var(--danger-border);}
+.nutri-cross-title{font-size:13.5px;font-weight:600;color:var(--text-1);margin-bottom:4px;}
+.nutri-cross-sub{font-size:11px;color:var(--text-3);line-height:1.55;margin-bottom:6px;}
+.nutri-kv{display:grid;grid-template-columns:88px 1fr;gap:4px 10px;font-size:11px;margin-top:6px;}
+.nutri-kv dt{color:var(--text-3);}
+.nutri-kv dd{color:var(--text-2);line-height:1.45;}
+.nutri-ant-table{width:100%;font-size:11px;border-collapse:collapse;}
+.nutri-ant-table th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-3);padding:6px 4px;border-bottom:1px solid var(--border);}
+.nutri-ant-table td{padding:8px 4px;border-bottom:1px solid var(--border);color:var(--text-2);line-height:1.45;vertical-align:top;}
+.nutri-ant-table td:first-child{font-weight:600;color:var(--text-1);min-width:72px;}
+.nutri-ant-table tr:last-child td{border-bottom:none;}
+.nutri-seq-week{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.nutri-seq-week:last-child{border-bottom:none;}
+.nutri-seq-num{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--primary-dim);border:1px solid var(--primary-border);color:var(--primary);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.nutri-seq-body{flex:1;}
+.nutri-seq-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:3px;}
+.nutri-seq-intro{font-size:12.5px;color:var(--text-1);font-weight:500;line-height:1.45;margin-bottom:3px;}
+.nutri-seq-avoid{font-size:11px;color:var(--warning);line-height:1.45;}
+.nutri-supp-ev{font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px;display:inline-block;margin-bottom:5px;}
+.nutri-supp-ev.mod{background:var(--warning-dim);color:var(--warning);border:1px solid rgba(251,169,76,.25);}
+.nutri-supp-ev.high{background:var(--success-dim);color:var(--success);border:1px solid var(--success-border);}
+.nutri-disclaimer{font-size:10px;color:var(--text-3);line-height:1.6;padding:.8rem;border:1px solid var(--border);border-radius:var(--r-md);margin-top:.5rem;}
+.sub-tabs.scroll-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;}
+.sub-tabs.scroll-tabs .sub-tab{flex:0 0 auto;min-width:max-content;padding:8px 12px;white-space:nowrap;}
+
+/* ── PROGRESO TAB ── */
+.ehs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:5px;}
+.ehs-btn{padding:10px 4px;font-size:16px;font-weight:600;border-radius:var(--r-sm);text-align:center;background:var(--card-el);border:1.5px solid var(--border-s);color:var(--text-2);transition:all .12s;font-family:inherit;cursor:pointer;}
+.ehs-btn:hover{border-color:var(--primary);color:var(--primary);}
+.ehs-btn.sel{background:var(--primary-dim);border-color:var(--primary);color:var(--primary);}
+.ehs-desc{font-size:12px;color:var(--text-3);min-height:14px;margin-top:3px;}
+.morning-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-bottom:5px;}
+.me-btn{padding:8px 2px;font-size:13px;font-weight:600;border-radius:var(--r-sm);text-align:center;background:var(--card-el);border:1.5px solid var(--border-s);color:var(--text-2);transition:all .12s;font-family:inherit;cursor:pointer;}
+.me-btn:hover{border-color:var(--success);color:var(--success);}
+.me-btn.sel{background:var(--success-dim);border-color:var(--success);color:var(--success);}
+.range-row{display:flex;align-items:center;gap:10px;}
+.range-val{font-size:19px;font-weight:600;color:var(--primary);min-width:42px;text-align:right;font-variant-numeric:tabular-nums;}
+.range-val.sc{color:var(--success);}
+input[type="range"]{flex:1;-webkit-appearance:none;height:3px;border-radius:99px;background:var(--border-s);outline:none;}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--primary);cursor:pointer;}
+.libido-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text-3);margin-top:3px;}
+.section-div{height:1px;background:var(--border);margin:.9rem 0;}
+.section-label{font-size:13px;font-weight:500;color:var(--text-2);margin-bottom:6px;}
+
+/* ── HISTORIAL TAB ── */
+.history-item{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--border);}
+.history-item:last-child{border-bottom:none;}
+.history-date{font-size:12px;color:var(--text-3);min-width:52px;font-variant-numeric:tabular-nums;}
+.h-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.h-dot.done{background:var(--primary);}
+.h-dot.miss{background:var(--border-s);}
+.h-label{font-size:13px;color:var(--text-2);flex:1;}
+.h-tag{font-size:10px;color:var(--text-3);background:var(--card-el);border:1px solid var(--border);border-radius:99px;padding:2px 7px;font-weight:500;}
+.h-checks{font-size:11px;color:var(--text-3);font-variant-numeric:tabular-nums;}
+
+/* ── BUTTONS ── */
+button{font-family:inherit;cursor:pointer;border-radius:var(--r-md);border:1px solid var(--border-s);background:var(--card-el);color:var(--text-1);font-size:14px;font-weight:500;padding:10px 15px;transition:opacity .12s;}
+button:hover{opacity:.8;}
+button:active{opacity:.6;transform:scale(0.99);}
+button.primary{background:var(--primary);color:var(--accent-text);border:none;font-weight:600;}
+button.ghost{background:transparent;border:none;color:var(--text-3);font-size:12px;padding:5px 7px;}
+button.danger-out{background:var(--danger-dim);border:1px solid var(--danger-border);color:var(--danger);}
+.btn-row{display:flex;gap:7px;}
+.btn-row button{flex:1;}
+
+/* ── ONBOARDING ── */
+.onboarding-wrap{display:flex;flex-direction:column;justify-content:center;min-height:calc(100dvh - var(--tab-h));padding:1.5rem 1rem;}
+.onboarding-hero{text-align:center;padding:1rem 0 1.4rem;}
+.onboarding-hero .hero-icon{font-size:44px;margin-bottom:.7rem;}
+label.opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--border-s);border-radius:var(--r-md);margin-bottom:6px;cursor:pointer;font-size:13.5px;line-height:1.4;transition:border-color .12s,background .12s;background:var(--card-el);color:var(--text-2);}
+label.opt:hover,label.opt:has(input:checked){border-color:var(--primary);background:var(--primary-dim);color:var(--text-1);}
+input[type=radio]{margin-top:3px;flex-shrink:0;accent-color:var(--primary);}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:calc(var(--tab-h) + 12px);left:50%;transform:translateX(-50%) translateY(8px);background:var(--text-1);color:var(--bg);padding:9px 18px;border-radius:99px;font-size:13px;font-weight:600;opacity:0;transition:all .2s ease;pointer-events:none;z-index:100;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── DATA SECTION ── */
+details summary{cursor:pointer;font-size:13px;color:var(--text-3);font-weight:500;list-style:none;display:flex;align-items:center;gap:7px;padding:.5rem 0;}
+details summary::-webkit-details-marker{display:none;}
+details[open] summary .chev{transform:rotate(90deg);}
+.chev{transition:transform .15s;font-size:9px;}
+textarea{width:100%;font-family:monospace;font-size:11px;padding:10px;border-radius:var(--r-sm);border:1px solid var(--border-s);resize:vertical;min-height:70px;background:var(--card-el);color:var(--text-2);outline:none;margin-top:.5rem;}
+textarea::placeholder{color:var(--text-3);}
+
+/* ── LIVE DOT ── */
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--primary);animation:lp 2s infinite;display:inline-block;}
+@keyframes lp{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* ── SUB-TABS ── */
+.sub-tabs{display:flex;gap:3px;background:var(--card-el);border-radius:var(--r-md);padding:3px;margin-bottom:.9rem;border:1px solid var(--border);}
+.sub-tab{flex:1;padding:8px 4px;border:none;background:transparent;color:var(--text-3);font-family:inherit;font-size:13px;font-weight:500;border-radius:calc(var(--r-sm) - 1px);cursor:pointer;transition:all .15s;text-align:center;}
+.sub-tab.active{background:var(--card);color:var(--text-1);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.4);}
+
+/* ── FOOD LOG (hoy comí) ── */
+.eaten-today-card{background:var(--card-el);border:1px solid var(--success-border);border-radius:var(--r-lg);padding:.9rem 1.1rem;margin-bottom:.9rem;}
+.eaten-row{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);}
+.eaten-row:last-child{border-bottom:none;}
+.eaten-note-txt{font-size:11px;color:var(--text-3);font-style:italic;margin-top:2px;}
+.food-obs-form{margin-top:8px;display:none;}
+.food-obs-form.open{display:block;}
+textarea.obs{font-family:inherit;font-size:12.5px;min-height:56px;color:var(--text-1);resize:none;}
+.obs-save{font-size:11px;padding:5px 14px;margin-top:5px;border-radius:99px;background:var(--primary-dim);border:1px solid var(--primary-border);color:var(--primary);}
+
+/* ── DAILY LOG / PROGRESS ── */
+.yn-row{display:flex;gap:6px;margin-bottom:5px;}
+.yn-btn{flex:1;padding:12px 4px;font-size:16px;font-weight:600;border-radius:var(--r-sm);background:var(--card-el);border:1.5px solid var(--border-s);color:var(--text-2);transition:all .12s;font-family:inherit;cursor:pointer;}
+.yn-btn.sel-yes{background:var(--success-dim);border-color:var(--success);color:var(--success);}
+.yn-btn.sel-no{background:var(--danger-dim);border-color:var(--danger-border);color:var(--danger);}
+.num-input-row{display:flex;align-items:center;gap:10px;}
+.num-input{width:70px;background:var(--card-el);border:1.5px solid var(--border-s);border-radius:var(--r-sm);color:var(--text-1);font-family:inherit;font-size:20px;font-weight:600;padding:8px;text-align:center;outline:none;}
+.num-input:focus{border-color:var(--primary);}
+.libido-guide{background:var(--card-el);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem .9rem;margin-top:.6rem;}
+.libido-guide-row{font-size:11.5px;color:var(--text-3);line-height:1.9;}
+.libido-guide-row strong{color:var(--text-2);font-weight:600;}
+.daily-saved-badge{display:inline-flex;align-items:center;gap:5px;background:var(--primary-dim);border:1px solid var(--primary-border);border-radius:99px;padding:3px 10px;font-size:11px;color:var(--primary);font-weight:600;}
+.insight-box{background:var(--card-el);border:1px solid var(--border);border-radius:var(--r-md);padding:.8rem;margin-bottom:.9rem;}
+.insight-row{display:flex;align-items:baseline;gap:6px;margin-bottom:3px;}
+.insight-val{font-size:17px;font-weight:600;color:var(--primary);font-variant-numeric:tabular-nums;}
+.insight-lbl{font-size:11.5px;color:var(--text-3);}
+.blocked-banner{display:flex;flex-direction:column;align-items:center;text-align:center;padding:1.5rem 1rem;background:var(--card-el);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:.8rem;}
+.blocked-banner .b-icon{font-size:32px;margin-bottom:.5rem;}
+.blocked-banner .b-title{font-size:15px;font-weight:600;color:var(--text-1);margin-bottom:.3rem;}
+.blocked-banner .b-sub{font-size:12px;color:var(--text-3);line-height:1.6;}
+
+/* ── HISTORIAL RICO ── */
+.hist-day{padding:10px 0;border-bottom:1px solid var(--border);}
+.hist-day:last-child{border-bottom:none;}
+.hist-main{display:flex;align-items:center;gap:9px;margin-bottom:4px;}
+.hist-tags{display:flex;gap:5px;flex-wrap:wrap;padding-left:61px;}
+.h-tag-success{font-size:10px;color:var(--success);background:var(--success-dim);border:1px solid var(--success-border);border-radius:99px;padding:2px 7px;font-weight:500;}
+.h-tag-warn{font-size:10px;color:var(--warning);background:var(--warning-dim);border:1px solid rgba(251,169,76,.2);border-radius:99px;padding:2px 7px;font-weight:500;}
+
+/* ── NOTIFICACIONES ── */
+.notif-banner{position:fixed;top:0;left:50%;transform:translateX(-50%);max-width:480px;width:100%;background:var(--card-el);border-bottom:1px solid var(--primary-border);padding:.65rem 1rem;z-index:200;display:none;align-items:center;gap:10px;}
+.notif-banner.show{display:flex;}
+.notif-txt{flex:1;font-size:13px;color:var(--text-1);font-weight:500;}
+.notif-close{background:transparent;border:none;color:var(--text-3);font-size:18px;padding:0 4px;cursor:pointer;line-height:1;}
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <!-- PAGES -->
+  <div class="page active" id="page-hoy">
+    <div class="page-header">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="page-title">Hoy</div>
+        <div class="live-dot"></div>
+      </div>
+      <div class="page-sub" id="hoy-sub">Cargando...</div>
+    </div>
+    <div id="hoy-content" style="padding-top:.8rem;"></div>
+  </div>
+
+  <div class="page" id="page-nutricion">
+    <div class="page-header">
+      <div class="page-title">Nutrición</div>
+      <div class="page-sub">Alimentos que generan óxido nítrico — selecciona los que tienes</div>
+    </div>
+    <div id="nutricion-content" style="padding-top:.8rem;"></div>
+  </div>
+
+  <div class="page" id="page-progreso">
+    <div class="page-header">
+      <div class="page-title">Progreso</div>
+      <div class="page-sub">Evaluación semanal y gráfico de evolución</div>
+    </div>
+    <div id="progreso-content" style="padding-top:.8rem;"></div>
+  </div>
+
+  <div class="page" id="page-historial">
+    <div class="page-header">
+      <div class="page-title">Historial</div>
+      <div class="page-sub">Últimos 7 días y datos del programa</div>
+    </div>
+    <div id="historial-content" style="padding-top:.8rem;"></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-tab="hoy">
+      <span class="nav-icon">🏠</span>Hoy
+    </button>
+    <button class="nav-btn" data-tab="nutricion">
+      <span class="nav-icon">🥗</span>Nutrición
+    </button>
+    <button class="nav-btn" data-tab="progreso">
+      <span class="nav-icon">📈</span>Progreso
+    </button>
+    <button class="nav-btn" data-tab="historial">
+      <span class="nav-icon">📋</span>Historial
+    </button>
+  </nav>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="notif-banner" id="notif-banner">
+  <span id="notif-icon" style="font-size:18px;flex-shrink:0;">⚡</span>
+  <span class="notif-txt" id="notif-txt"></span>
+  <button class="notif-close" id="notif-close">×</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ── STATE ──
+const STORAGE_KEY = 'pelvic_v3';
+function loadState() {
+  try {
+    for (const k of [STORAGE_KEY,'pelvic_program_v2','pelvic_program_v1']) {
+      const r = localStorage.getItem(k);
+      if (r) { const p=JSON.parse(r); if (k!==STORAGE_KEY) saveState(p); return p; }
+    }
+  } catch(e){}
+  return { startDate:null, baseline:null, logs:{}, checkins:[], foodPrefs:{}, foodLog:{}, dailyLog:{} };
+}
+function saveState(s) { try { localStorage.setItem(STORAGE_KEY,JSON.stringify(s)); } catch(e){} }
+
+let state = loadState();
+if (!state.foodLog)   state.foodLog   = {};
+if (!state.dailyLog)  state.dailyLog  = {};
+if (!state.foodPrefs) state.foodPrefs = {};
+let chartInstance = null;
+let currentTab = 'hoy';
+let subTabs = { nutricion: 'catalogo', progreso: 'hoy' };
+let selectedEhs = null, selectedMorning = null;
+let dlMorning = null;
+
+// ── TAB NAVIGATION ──
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.getAttribute('data-tab');
+    switchTab(tab);
+  });
+});
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');
+  document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+  renderTab(tab);
+}
+
+function renderTab(tab) {
+  if (!state.startDate) { renderOnboarding(); return; }
+  if (tab==='hoy')       renderHoy();
+  if (tab==='nutricion') renderNutricion();
+  if (tab==='progreso')  renderProgreso();
+  if (tab==='historial') renderHistorial();
+}
+
+// ── DATE UTILS ──
+function todayISO() { return new Date().toISOString().slice(0,10); }
+function daysSince(d) { return d ? Math.floor((new Date()-new Date(d))/86400000) : 0; }
+function currentWeek() { return !state.startDate ? 1 : Math.min(12,Math.max(1,Math.floor(daysSince(state.startDate)/7)+1)); }
+function phaseForWeek(w) {
+  if (w<=4) return {name:'Fase 1 — Fundación',range:'Sem 1–4',cls:'p1'};
+  if (w<=8) return {name:'Fase 2 — Construcción',range:'Sem 5–8',cls:'p2'};
+  return {name:'Fase 3 — Optimización',range:'Sem 9–12',cls:'p3'};
+}
+function isoToDate(s) { const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function addDays(iso,n) { const d=isoToDate(iso); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+function shortDay(iso) { return ['Do','Lu','Ma','Mi','Ju','Vi','Sa'][isoToDate(iso).getDay()]; }
+function last7Days() { const r=[],t=todayISO(); for(let i=6;i>=0;i--) r.push(addDays(t,-i)); return r; }
+function calcStreak() { let s=0,cur=todayISO(); while(state.logs[cur]){s++;cur=addDays(cur,-1);} return s; }
+function adherenceW(w) {
+  if (!state.startDate) return 0;
+  const ws=addDays(state.startDate,(w-1)*7); let n=0;
+  for(let i=0;i<7;i++) if(state.logs[addDays(ws,i)]) n++;
+  return Math.round(n/7*100);
+}
+
+// ── TRAIN TYPES ──
+const TRAIN_TYPES = [
+  {id:'legs',   icon:'🦵', label:'Piernas',   color:'success', desc:'Sentadillas, peso muerto, glúteos'},
+  {id:'upper',  icon:'💪', label:'Pecho/Esp.', color:'other',   desc:'Press, jalones, remos'},
+  {id:'arms',   icon:'💪', label:'Brazos',     color:'other',   desc:'Curls, tríceps, hombros'},
+  {id:'cardio', icon:'🏃', label:'Cardio',     color:'cardio',  desc:'Correr, bici, HIIT'},
+  {id:'other',  icon:'⚡', label:'Otro',       color:'other',   desc:'Deporte, funcional'},
+];
+function trainChipClass(id, color) {
+  if (color==='success') return 'sel-legs';
+  if (color==='cardio')  return 'sel-cardio';
+  return 'sel-other';
+}
+
+// ── EXERCISE SPECS ──
+function kegelSpec(w){if(w<=2)return{r:10,s:3,h:3,rs:3,l:'Kegel acostado básico'};if(w<=4)return{r:10,s:3,h:5,rs:5,l:'Kegel acostado'};if(w<=6)return{r:12,s:3,h:6,rs:6,l:'Kegel sentado'};if(w<=8)return{r:15,s:3,h:7,rs:7,l:'Kegel sentado / de pie'};if(w<=10)return{r:15,s:3,h:9,rs:9,l:'Kegel de pie avanzado'};return{r:15,s:3,h:10,rs:10,l:'Kegel de pie + flicks'};}
+function flicksSpec(w){if(w<=2)return null;if(w<=6)return{r:8,s:2,l:'Flicks (contracciones rápidas)'};return{r:10,s:3,l:'Flicks (contracciones rápidas)'};}
+function bridgeSpec(w){if(w<=2)return null;if(w<=6)return{r:10,s:2,h:5,l:'Puente de glúteos + piso pélvico'};return{r:12,s:3,h:8,l:'Puente de glúteos + piso pélvico'};}
+function squatSpec(w){if(w<=4)return{r:10,s:2,l:'Sentadilla peso corporal'};if(w<=8)return{r:12,s:3,l:'Sentadilla peso corporal'};return{r:15,s:3,l:'Sentadilla profunda + contracción al subir'};}
+function cardioSpec(w){if(w<=4)return{m:20,l:'Caminata rápida'};if(w<=8)return{m:30,l:'Caminata rápida o trote suave'};return{m:40,l:'Cardio moderado-alto'};}
+function coldSpec(w){if(w<=4)return null;if(w<=8)return{s:45,l:'Ducha fría'};return{s:75,l:'Ducha fría'};}
+function medSpec(w){if(w<=4)return{m:5,l:'Respiración consciente'};if(w<=8)return{m:12,l:'Meditación / mindfulness'};return{m:18,l:'Meditación / mindfulness'};}
+
+function buildSession(w, trainedTypes) {
+  // trainedTypes: array of ids, e.g. ['legs','cardio']
+  const types = trainedTypes || [];
+  const hasLegs   = types.includes('legs');
+  const hasCardio = types.includes('cardio');
+  const hasUpper  = types.includes('upper') || types.includes('arms');
+  const hasOther  = types.includes('other');
+  const k=kegelSpec(w),f=flicksSpec(w),b=bridgeSpec(w),sq=squatSpec(w),c=cardioSpec(w),cold=coldSpec(w),med=medSpec(w);
+
+  const morning=[], midday=[], evening=[];
+
+  // MAÑANA — siempre igual
+  morning.push({text:`${k.l}: ${k.r} rep × ${k.s} series, contracción ${k.h}s / relajación ${k.rs}s`, tip:'Exhala al contraer. Solo el piso pélvico — no aprietes glúteos ni abdomen.'});
+  if (cold) morning.push({text:`${cold.l}: ${cold.s} segundos`, tip:'Al final de tu ducha normal. Dopamina elevada durante horas.'});
+
+  // MEDIODÍA — adaptado
+  if (hasLegs && hasCardio) {
+    midday.push({note:true, text:'Piernas + cardio hoy — solo mantenimiento de piso pélvico:'});
+    midday.push({text:f?`${f.l}: ${f.r} rep × ${f.s}`:'Kegel rápido: 10 contracciones', tip:'Glúteos, isquios y cardio ya cubiertos en el gym.'});
+  } else if (hasLegs) {
+    midday.push({note:true, text:'Piernas hoy — piso pélvico ya activado en sentadillas y peso muerto:'});
+    midday.push({text:f?`${f.l}: ${f.r} rep × ${f.s}`:'Kegel rápido: 10 contracciones', tip:'No repitas sentadillas ni puentes — ya los hiciste.'});
+    midday.push({text:`${c.l}: ${c.m} min (opcional)`, tip:'Si no hiciste cardio en el gym, hazla ligera.'});
+  } else if (hasCardio) {
+    midday.push({note:true, text:'Cardio ya hecho — flujo activado, seguimos con fuerza:'});
+    if (sq) midday.push({text:`${sq.l}: ${sq.r} rep × ${sq.s} series`, tip:'Contrae el piso pélvico al subir.'});
+    if (b)  midday.push({text:`${b.l}: ${b.r} rep × ${b.s} series, mantén ${b.h}s`, tip:'Activa el piso pélvico ANTES de subir la cadera.'});
+  } else if (hasUpper) {
+    midday.push({note:true, text:'Upper body no activa el piso pélvico directamente — rutina base:'});
+    midday.push({text:`${c.l}: ${c.m} minutos`, tip:'Ritmo cómodo — flujo sanguíneo sistémico.'});
+    if (sq) midday.push({text:`${sq.l}: ${sq.r} rep × ${sq.s} series`, tip:'Contrae el piso pélvico al subir.'});
+    if (b)  midday.push({text:`${b.l}: ${b.r} rep × ${b.s} series, mantén ${b.h}s`, tip:'Activa antes de subir.'});
+  } else if (hasOther) {
+    midday.push({note:true, text:'Entrenamiento extra — mediodía aligerado:'});
+    midday.push({text:f?`${f.l}: ${f.r} rep × ${f.s}`:'Kegel rápido: 8 contracciones', tip:'Mantenimiento sin acumular fatiga.'});
+    if (sq) midday.push({text:`${sq.l}: ${sq.r} rep × ${sq.s} series`, tip:'Si tienes energía, si no sáltalo.'});
+  } else {
+    // Base: sin entreno adicional
+    midday.push({text:`${c.l}: ${c.m} minutos`, tip:'Ritmo donde puedas hablar con algo de esfuerzo. Flujo sanguíneo sistémico.'});
+    if (sq) midday.push({text:`${sq.l}: ${sq.r} rep × ${sq.s} series`, tip:'Contrae el piso pélvico al subir de la sentadilla.'});
+    if (b)  midday.push({text:`${b.l}: ${b.r} rep × ${b.s} series, mantén ${b.h}s`, tip:'Activa el piso pélvico ANTES de subir la cadera, no después.'});
+  }
+
+  // NOCHE — siempre igual
+  evening.push({text:`${k.l} (noche): ${k.r} rep × ${k.s} series`, tip:'La segunda sesión del día consolida la memoria muscular.'});
+  evening.push({text:`${med.l}: ${med.m} minutos`, tip:'Reduce cortisol — antagonista de testosterona. Sin pantallas después.'});
+  if (f) evening.push({text:`${f.l} extra: ${f.r} rep × ${f.s}`, tip:'Entrena la velocidad de respuesta del piso pélvico.'});
+
+  return { morning, midday, evening };
+}
+
+// ── FOOD DATABASE (óxido nítrico) ──
+const NO_FOODS = [
+  // Categoría 1: Nitratos → NO (vía bacteria oral → nitrito → NO)
+  { cat:'Nitratos → NO', icon:'🫐', name:'Remolacha',      por:'200 g (1 mediana)',    stars:5, mech:'~400 mg nitratos — el más alto por porción', note:'Efecto en 2-3 h post-ingesta. Jugo concentrado 70 mL = porción equivalente. Comer cruda o vapor maximiza efecto.' },
+  { cat:'Nitratos → NO', icon:'🥬', name:'Rúcula',         por:'100 g (ensalada)',     stars:5, mech:'~480 mg/100g — densidad más alta de todos',   note:'La mayor concentración de nitratos por peso. Fácil de agregar a cualquier comida.' },
+  { cat:'Nitratos → NO', icon:'🥬', name:'Espinaca',       por:'100 g (2 tazas)',      stars:4, mech:'~250 mg nitratos/100g',                        note:'Alta disponibilidad. Funciona tanto cruda como en batido.' },
+  { cat:'Nitratos → NO', icon:'🥬', name:'Lechuga romana', por:'100 g (plato grande)', stars:3, mech:'~150 mg nitratos/100g',                        note:'Alternativa práctica si no tienes rúcula o espinaca.' },
+  { cat:'Nitratos → NO', icon:'🥬', name:'Apio',           por:'150 g (3-4 ramas)',    stars:3, mech:'~200 mg nitratos/porción',                     note:'Licuado potencia el efecto. Bajo en calorías.' },
+  // Categoría 2: Citrulina → Arginina → NO
+  { cat:'Citrulina → NO', icon:'🍉', name:'Sandía',        por:'2 tazas (300 g)',      stars:4, mech:'~1 g citrulina/porción → arginina → NO',       note:'La sandía sin semillas tiene menos citrulina. Preferir la variedad tradicional con semillas.' },
+  { cat:'Citrulina → NO', icon:'🥒', name:'Pepino',        por:'1 mediano (200 g)',    stars:2, mech:'~0.3 g citrulina — menor que sandía',           note:'Alternativa útil fuera de temporada. Hidrante y fácil de incluir.' },
+  // Categoría 3: Flavonoides / Polifenoles → NO endotelial
+  { cat:'Polifenoles → NO endotelial', icon:'🍫', name:'Cacao >70% / Chocolate negro', por:'30 g (3-4 cuadros)',  stars:4, mech:'Epicatequinas → activación eNOS endotelial',    note:'Requiere mínimo 70% cacao. Más puro = más efecto. Preferir sin azúcar.' },
+  { cat:'Polifenoles → NO endotelial', icon:'🫐', name:'Granada (jugo)',               por:'250 mL (1 vaso)',     stars:4, mech:'Punicalagins → NO + reduce oxidación',           note:'Jugo natural sin azúcar añadida. Uno de los antioxidantes más potentes conocidos.' },
+  { cat:'Polifenoles → NO endotelial', icon:'🫐', name:'Arándanos o moras',            por:'1 taza (150 g)',      stars:3, mech:'Flavonoides → mejora función endotelial',        note:'Congelados funcionan igual. Harvard: −9–11% riesgo DE con consumo regular.' },
+  { cat:'Polifenoles → NO endotelial', icon:'🫒', name:'Aceite de oliva virgen extra', por:'1-2 cdas (15-30 mL)', stars:2, mech:'Oleocantal + polifenoles → eNOS',                note:'Consumir crudo (no freír). El calor destruye los polifenoles activos.' },
+  // Categoría 4: Arginina + Omega-3
+  { cat:'Arginina / Omega-3 → NO', icon:'🧄', name:'Ajo crudo',          por:'2 dientes (6-8 g)',    stars:3, mech:'Alicina → estimula síntesis de NO directamente',  note:'Comer crudo o picar y esperar 10 min antes de cocinar activa la alicina.' },
+  { cat:'Arginina / Omega-3 → NO', icon:'🌰', name:'Nueces',             por:'60 g (puñado grande)', stars:3, mech:'Arginina + omega-3 ALA → mejora endotelio',        note:'Nutrients 2019: mejora función orgásmica en hombres con 60 g/día.' },
+  { cat:'Arginina / Omega-3 → NO', icon:'🐟', name:'Salmón o sardinas',  por:'120-150 g (1 porción)',stars:3, mech:'Omega-3 EPA/DHA → protección endotelial + NO',     note:'2-3 veces por semana. Sardinas son opción más económica con igual efecto.' },
+];
+
+const NO_CATS = [...new Set(NO_FOODS.map(f=>f.cat))];
+
+// ── FICHA NUTRICIÓN V2 (alimentos por fase, cruces, protocolo) ──
+const NUTRI_PHASES = [
+  { phase:'Semana 1', cls:'p1', title:'Base de óxido nítrico (nitratos)', note:'El NO es la molécula central de la erección vascular. Efecto inmediato y acumulativo con consumo diario.',
+    items:[
+      {icon:'🫐',name:'Remolacha',por:'1-2 medianas o 250 ml jugo',comp:'Nitratos inorgánicos'},
+      {icon:'🥬',name:'Rúcula',por:'1-2 tazas crudas',comp:'Mayor concentración de nitrato por gramo'},
+      {icon:'🥬',name:'Espinaca',por:'1-2 tazas (cruda o cocción breve)',comp:'Nitratos'},
+      {icon:'🥬',name:'Kale',por:'1 taza',comp:'Nitratos + omega-3 vegetal'},
+    ]},
+  { phase:'Semana 1-2', cls:'p2', title:'Precursores de arginina (vía dietaria)', note:'Arginina dietaria como sustrato para la síntesis de óxido nítrico.',
+    items:[
+      {icon:'🌰',name:'Nueces (walnuts)',por:'30-60 g (un puñado)',comp:'Arginina + vitamina E + omega-3'},
+      {icon:'🍗',name:'Pollo, pavo, carnes magras',por:'150-200 g',comp:'L-arginina dietaria'},
+      {icon:'🐟',name:'Pescado (cualquier tipo)',por:'150 g, 3-4×/semana',comp:'L-arginina + omega-3'},
+      {icon:'🥛',name:'Lácteos (yogurt, queso)',por:'1-2 porciones',comp:'L-arginina'},
+    ]},
+  { phase:'Semana 2', cls:'p3', title:'Flavonoides y protección vascular', note:'Antocianinas y flavonoles asociados a mejor función endotelial.',
+    items:[
+      {icon:'🫐',name:'Arándanos, fresas, moras',por:'1 taza, 4-5×/semana',comp:'Antocianinas — asociadas a −9-11% riesgo DE'},
+      {icon:'🍊',name:'Cítricos (naranja entera)',por:'1-2 unidades/día',comp:'Hesperidina — mejora función endotelial y eréctil'},
+      {icon:'🍎',name:'Manzana, pera',por:'1 unidad/día',comp:'Quercetina y flavonoles'},
+      {icon:'🍫',name:'Chocolate negro >70%',por:'20-30 g/día',comp:'Epicatequinas'},
+      {icon:'🫐',name:'Granada (fruta o jugo natural)',por:'1 unidad o 200 ml, 3-4×/semana',comp:'Punicalagina — antioxidante endotelial'},
+    ]},
+  { phase:'Semana 2', cls:'p4', title:'Compuestos de apoyo adicional', note:'Complementos que potencian la vía vascular y hormonal de forma dietaria.',
+    items:[
+      {icon:'🧄',name:'Ajo crudo o ligeramente cocido',por:'1-2 dientes',comp:'Alicina — estimula producción de NO'},
+      {icon:'🌶',name:'Ajíes picantes (cayena, jalapeño)',por:'Al gusto, con las comidas',comp:'Capsaicina — vasodilatación periférica'},
+      {icon:'🫒',name:'Aceite de oliva extra virgen',por:'2-3 cucharadas/día',comp:'Grasas monoinsaturadas — apoyo a testosterona'},
+      {icon:'🦪',name:'Ostras',por:'6 unidades, 1-2×/semana',comp:'Zinc en dosis alta concentrada'},
+      {icon:'☕',name:'Café',por:'Hasta 2 tazas/día',comp:'Antioxidante en consumo moderado — ver timing en Cruces'},
+    ]},
+];
+
+const NUTRI_SUPPS = [
+  { name:'Azafrán (Crocus sativus)', ev:'high', evLabel:'Evidencia moderada-alta',
+    summary:'Uno de los compuestos con evidencia más consistente. Mecanismo antioxidante, modulación hormonal y posible acción central sobre neurotransmisores del deseo.',
+    fields:[['Dosis estudiada','15 mg × 2/día (30 mg total) × 4 sem., o 200 mg/día × 10 días'],['Resultado','IIEF-15: 22.15 → 39.20 (p<0.001) en 10 días; mejora en rigidez y tumescencia'],['Metaanálisis','+5.36 pts función eréctil, +2.18 satisfacción coito, +0.78 deseo (p<0.01)'],['Nota práctica','Extracto estandarizado — la crocina varía mucho en hebras de cocina'],['Precaución','Tóxico en dosis muy altas (>5 g), muy por encima de la terapéutica']]},
+  { name:'Fenogreco (Trigonella foenum-graecum)', ev:'mod', evLabel:'Evidencia moderada',
+    summary:'Mejora parámetros subjetivos de función sexual sin alterar testosterona ni prolactina — posible mecanismo vía energía y bienestar general.',
+    fields:[['Dosis estudiada','600 mg/día × 6 semanas'],['Resultado','↑ excitación sexual y orgasmo (escala Derogatis); ↑ fuerza, energía y bienestar'],['Dato clave','Testosterona y prolactina se mantuvieron normales'],['Precaución','Puede potenciar hipoglicemiantes — vigilar en diabetes/prediabetes']]},
+  { name:'Tongkat Ali (Eurycoma longifolia)', ev:'mod', evLabel:'Evidencia moderada',
+    summary:'Respaldo sólido en ECA recientes, especialmente combinado con entrenamiento físico concurrente.',
+    fields:[['Dosis estudiada','200 mg/día × 12 sem. (algunos protocolos a 6 meses)'],['Resultado 6 meses','↑ función eréctil (IIEF-5) y testosterona en ADAM; mejor con ejercicio 3×/sem. × 60 min'],['Hipogonadismo','76/320 pacientes con ↑ significativa de testosterona tras 1 mes'],['Precaución calidad','Extractos certificados (ej. Physta®) — eurycomanona varía mucho entre marcas']]},
+];
+
+const NUTRI_AVOID = [
+  { name:'Horny Goat Weed (Epimedium)', why:'Generalmente seguro, pero sin evidencia en humanos de beneficio real — solo estudios en animales.'},
+  { name:'Ginkgo Biloba', why:'Sin datos convincentes en DE; puede causar cefalea, convulsiones y sangrado, especialmente con anticoagulantes.'},
+  { name:'Yohimbina', why:'Resultados contradictorios (posible placebo); puede causar hipertensión, ansiedad, insomnio y sudoración.'},
+  { name:'Productos sin marca certificada', why:'81% de muestras en EE.UU./Asia contenían inhibidores PDE5 no declarados (mismo principio que Viagra) — ilegal y peligroso sin supervisión médica, especialmente con nitratos.'},
+];
+
+const NUTRI_SYNERGIES = [
+  { title:'Citrulina + Arginina + Pycnogenol', tag:'Sinergia documentada — fórmula "Prelox"',
+    why:'Pycnogenol activa eNOS; arginina y citrulina son el sustrato. Activar la enzima sin sustrato, o viceversa, produce menos efecto.',
+    detail:'Dosis estudiada: L-arginina 1.7-3 g/día + Pycnogenol 40-120 mg/día. Algunos protocolos: 80 mg Pycnogenol + 1.92 g arginina + 1.2 g citrulina + 40 mg extracto de roble francés.',
+    result:'Mejora IIEF de 3-6 puntos en ~3 meses, sin efectos secundarios significativos. La citrulina eleva arginina plasmática más que arginina sola.'},
+  { title:'L-Arginina / Citrulina + inhibidores PDE5', tag:'Sinergia — solo con indicación médica',
+    why:'Actúan en puntos distintos de la misma vía: arginina aporta sustrato, el inhibidor PDE5 prolonga la señal de NO ya generada.',
+    detail:'Si usas tadalafil o sildenafil con indicación médica, añadir arginina/citrulina puede sumar beneficio adicional pequeño pero consistente.',
+    result:''},
+  { title:'Vitamina C + antioxidantes vegetales', tag:'Sinergia biodisponibilidad',
+    why:'La vitamina C regenera vitamina E activa tras neutralizar radicales libres y potencia antioxidantes vegetales.',
+    detail:'Tomar cítricos (vitamina C) en la misma comida que ginseng, pycnogenol o azafrán mejora el efecto antioxidante conjunto.',
+    result:''},
+];
+
+const NUTRI_ANTAGONISMS = [
+  { combo:'Café + suplementos NO', effect:'La cafeína aguda puede aumentar rigidez arterial y presión aórtica — va en sentido contrario al vasodilatador de citrulina/arginina.', avoid:'Separar 2-3 h: café por la mañana, suplemento más tarde o antes del entrenamiento.'},
+  { combo:'Zinc alto + cobre', effect:'Zinc >40 mg/día sostenido bloquea absorción de cobre a largo plazo.', avoid:'No superar 30 mg/día de zinc sin supervisión; si dosis alta prolongada, considerar cobre 1-2 mg/día aparte.'},
+  { combo:'Calcio + hierro o zinc', effect:'Calcio en dosis altas inhibe absorción de hierro y zinc por competencia intestinal.', avoid:'Si tomas zinc, evita junto con comida muy rica en lácteos o suplemento de calcio; separar 2 h.'},
+  { combo:'Fitatos + zinc dietario', effect:'Fitatos en legumbres/cereales integrales crudos forman sales insolubles con zinc, hierro y magnesio.', avoid:'Remojar o germinar legumbres/granos reduce fitatos; no afecta zinc de fuentes animales (ostras, carne).'},
+  { combo:'Alcohol + citrulina/arginina/remolacha', effect:'Ambos relajan vasos; combinados pueden bajar presión más de lo esperado (mareo, especialmente con PA baja).', avoid:'Evitar suplemento NO el mismo día con alcohol relevante, o separar varias horas.'},
+  { combo:'Pomelo + hierbas CYP3A4', effect:'El pomelo inhibe enzima hepática que metaboliza muchos compuestos — puede elevar concentración en sangre.', avoid:'Evitar pomelo o jugo cerca de ginseng, tongkat ali u otros extractos herbales concentrados.'},
+  { combo:'Fibra/proteína exceso + aminoácidos', effect:'Fibra y proteína en exceso pueden unirse a minerales y aminoácidos libres, reduciendo absorción puntual.', avoid:'Tomar arginina/citrulina con estómago relativamente vacío o comida ligera, no tras comida copiosa rica en fibra.'},
+];
+
+const NUTRI_SEQUENCE = [
+  { weeks:'1', intro:'Alimentos ricos en nitratos (remolacha, rúcula, espinaca) + carnes/pescado con arginina dietaria', avoid:'Nada que evitar aún — solo comida real'},
+  { weeks:'2', intro:'Se suman flavonoides (bayas, cítricos, chocolate >70%) + ajo + aceite de oliva', avoid:'Separar café de comidas ricas en hierro vegetal si te preocupa absorción de hierro'},
+  { weeks:'3-4', intro:'Primer suplemento: L-Citrulina 1.5 g/día (750 mg + 750 mg)', avoid:'No junto con café; no el mismo día con alcohol en cantidad relevante'},
+  { weeks:'5-6', intro:'Si hay buena tolerancia: Pycnogenol 60-120 mg/día junto a citrulina (sinergia documentada)', avoid:'Mismo cuidado con café/alcohol que fase anterior'},
+  { weeks:'7-8', intro:'Evaluar Panax Ginseng 900 mg × 2-3/día como alternativa (no junto a citrulina+pycnogenol para no mezclar variables)', avoid:'Evitar pomelo cerca de la toma; vigilar si usas anticoagulantes'},
+  { weeks:'9-10', intro:'Opcional: Azafrán 15 mg × 2/día o Tongkat Ali 200 mg/día (elegir uno, no ambos)', avoid:'Tongkat: evitar pomelo. Azafrán: no exceder dosis'},
+  { weeks:'11-12', intro:'Mantener la combinación que mejor resultado haya dado; considerar Fenogreco 600 mg/día si buscas más energía/libido', avoid:'Vigilar glicemia si hay antecedente de diabetes (fenogreco potencia hipoglicemiantes)'},
+];
+
+function renderNutriPhaseRow(item) {
+  return `<div class="nutri-row">
+    <div class="nutri-row-icon">${item.icon}</div>
+    <div class="nutri-row-body">
+      <div class="nutri-row-name">${escHtml(item.name)}</div>
+      <div class="nutri-row-por">${escHtml(item.por)}</div>
+      <div class="nutri-row-comp">${escHtml(item.comp)}</div>
+    </div>
+  </div>`;
+}
+
+function renderNutriFases() {
+  let html = `<div class="nutri-intro">Antes de suplementar, se recomiendan <strong style="color:var(--text-1);">2-3 semanas de ajuste alimentario puro</strong> para establecer línea base y reducir el riesgo de atribuir efectos al compuesto equivocado.</div>
+  <div class="nutri-callout tip"><strong>¿Por qué este orden?</strong> Empezar por nitratos (efecto vascular inmediato) y sumar flavonoides y arginina dietaria da una base sólida de 2 semanas antes de suplementos concentrados, cuando aparecen las interacciones más relevantes.</div>`;
+  NUTRI_PHASES.forEach(ph => {
+    html += `<div class="no-section">
+      <span class="nutri-phase-pill ${ph.cls}">${escHtml(ph.phase)}</span>
+      <div class="card" style="padding:.5rem 1.1rem .6rem;">
+        <h3 style="margin-bottom:4px;">${escHtml(ph.title)}</h3>
+        <div class="micro" style="margin-bottom:.6rem;">${escHtml(ph.note)}</div>
+        ${ph.items.map(renderNutriPhaseRow).join('')}
+      </div>
+    </div>`;
+  });
+  return html;
+}
+
+function renderNutriCruces() {
+  let html = `<div class="nutri-intro">Qué combinaciones se potencian mutuamente y cuáles reducen el efecto esperado — según mecanismos de absorción y evidencia de combinación directa.</div>`;
+  html += `<div class="overline" style="margin-bottom:.5rem;">Sinergias comprobadas</div>`;
+  NUTRI_SYNERGIES.forEach(s => {
+    html += `<div class="card" style="margin-bottom:.7rem;">
+      <span class="nutri-tag sin">✓ ${escHtml(s.tag)}</span>
+      <div class="nutri-cross-title">${escHtml(s.title)}</div>
+      <div class="nutri-cross-sub">${escHtml(s.why)}</div>
+      <div class="micro" style="line-height:1.6;">${escHtml(s.detail)}</div>
+      ${s.result?`<div class="micro" style="margin-top:5px;color:var(--success);">${escHtml(s.result)}</div>`:''}
+    </div>`;
+  });
+  html += `<div class="overline" style="margin:.4rem 0 .5rem;">Antagonismos — cuándo un compuesto reduce el efecto de otro</div>`;
+  html += `<div class="card" style="padding:.6rem .8rem;">
+    <table class="nutri-ant-table">
+      <thead><tr><th>Combinación</th><th>Qué pasa</th><th>Cómo evitarlo</th></tr></thead>
+      <tbody>${NUTRI_ANTAGONISMS.map(a=>`<tr>
+        <td>${escHtml(a.combo)}</td><td>${escHtml(a.effect)}</td><td style="color:var(--primary);">${escHtml(a.avoid)}</td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div>`;
+  html += `<div class="nutri-callout warn" style="margin-top:.8rem;">
+    <strong>Antagonismo más relevante si tomas L-Citrulina o L-Arginina:</strong> evita tomarlo en la misma hora que café o té. No es peligroso, pero reduce el efecto vasodilatador. Opción simple: café al despertar, citrulina 1-2 h después o con el almuerzo.
+  </div>`;
+  return html;
+}
+
+function isCurrentSeqWeek(w, weeks) {
+  if (weeks.includes('-')) {
+    const [a, b] = weeks.split('-').map(Number);
+    return w >= a && w <= b;
+  }
+  return w === parseInt(weeks, 10);
+}
+
+function renderNutriProtocolo() {
+  const w = currentWeek();
+  let html = `<div class="nutri-intro">Progresión sugerida que evita introducir demasiadas variables a la vez y minimiza los antagonismos. <strong style="color:var(--text-1);">Semana actual: ${w}</strong></div>`;
+  html += `<div class="card" style="padding:.5rem 1.1rem;">`;
+  NUTRI_SEQUENCE.forEach(s => {
+    const active = isCurrentSeqWeek(w, s.weeks);
+    html += `<div class="nutri-seq-week"${active?' style="background:var(--primary-dim);margin:0 -1.1rem;padding-left:1.1rem;padding-right:1.1rem;border-radius:var(--r-sm);"':''}>
+      <div class="nutri-seq-num">${s.weeks}</div>
+      <div class="nutri-seq-body">
+        <div class="nutri-seq-label">Semana${s.weeks.includes('-')?'s':''} ${s.weeks}</div>
+        <div class="nutri-seq-intro">${escHtml(s.intro)}</div>
+        <div class="nutri-seq-avoid">⚠ ${escHtml(s.avoid)}</div>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  html += `<div class="nutri-callout tip"><strong>Principio de una variable a la vez:</strong> en semanas 7-10 no combines Ginseng con Azafrán o Tongkat Ali simultáneamente. No son antagonistas — pero si tomas tres compuestos nuevos a la vez no podrás identificar cuál da resultado o efecto adverso. Cambia de a uno, evalúa 3-4 semanas, decide si mantener o rotar.</div>`;
+  html += `<div class="overline" style="margin:.9rem 0 .5rem;">Suplementos nuevos con evidencia (V2)</div>`;
+  NUTRI_SUPPS.forEach(s => {
+    html += `<div class="card" style="margin-bottom:.7rem;">
+      <span class="nutri-supp-ev ${s.ev}">${escHtml(s.evLabel)}</span>
+      <div class="nutri-cross-title">${escHtml(s.name)}</div>
+      <div class="nutri-cross-sub" style="margin-bottom:8px;">${escHtml(s.summary)}</div>
+      <dl class="nutri-kv">${s.fields.map(([k,v])=>`<dt>${escHtml(k)}</dt><dd>${escHtml(v)}</dd>`).join('')}</dl>
+    </div>`;
+  });
+  html += `<div class="overline" style="margin:.4rem 0 .5rem;">Lo que la evidencia descarta o señala como riesgoso</div>`;
+  html += `<div class="card" style="padding:.5rem 1.1rem;">`;
+  NUTRI_AVOID.forEach(a => {
+    html += `<div class="nutri-row">
+      <div class="nutri-row-body">
+        <div class="nutri-row-name" style="color:var(--danger);">${escHtml(a.name)}</div>
+        <div class="nutri-row-note">${escHtml(a.why)}</div>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  html += `<div class="nutri-disclaimer">Documento informativo — no reemplaza evaluación médica ni indicación profesional. Las dosis e interacciones corresponden a evidencia de investigación, no a prescripción individual. Cualquier decisión de suplementación debe evaluarse con un profesional considerando historial clínico, medicamentos y condiciones de base.</div>`;
+  return html;
+}
+
+function stars(n) {
+  return Array.from({length:5},(_,i)=>`<span class="star ${i<n?'on':'off'}">${i<n?'★':'☆'}</span>`).join('');
+}
+
+function escHtml(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function ensureTodayLog(w) {
+  const today = todayISO();
+  if (!state.logs[today]) {
+    state.logs[today] = { trainedTypes: [], session: buildSession(w, []), done: {} };
+    saveState(state);
+    return state.logs[today];
+  }
+  const log = state.logs[today];
+  if (!log.done) log.done = {};
+  if (!Array.isArray(log.trainedTypes)) log.trainedTypes = [];
+  const s = log.session;
+  if (!s || !Array.isArray(s.morning) || !Array.isArray(s.midday) || !Array.isArray(s.evening)) {
+    log.session = buildSession(w, log.trainedTypes);
+    saveState(state);
+  }
+  return log;
+}
+
+// ── RENDER HOY ──
+function renderHoy() {
+  const w=currentWeek(), phase=phaseForWeek(w), today=todayISO();
+  const streak=calcStreak(), gap=daysSinceLastLog();
+  const d=daysSince(state.startDate), pct=Math.min(100,Math.round(d/84*100));
+
+  const log = ensureTodayLog(w);
+  const types=log.trainedTypes||[];
+
+  document.getElementById('hoy-sub').textContent=`Semana ${w} · Día ${d+1} · ${phase.name}`;
+
+  let html=`
+  <div class="progress-card">
+    <div class="progress-top">
+      <div>
+        <div class="week-meta">Semana ${w} de 12 &middot; Día ${d+1}</div>
+        <span class="phase-pill ${phase.cls}">${phase.name} &middot; ${phase.range}</span>
+      </div>
+      <div style="text-align:right;">
+        <div class="big-pct">${pct}%</div>
+        <div class="big-pct-label">del programa</div>
+      </div>
+    </div>
+    <div class="bar-track"><div class="bar-fill" style="width:${pct}%;"></div></div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-chip"><div class="val">${streak}${streak>=3?' 🔥':''}</div><div class="lbl">Racha</div></div>
+    <div class="stat-chip"><div class="val muted">${adherenceW(w)}%</div><div class="lbl">Esta sem.</div></div>
+    <div class="stat-chip"><div class="val muted">${Object.keys(state.logs).length}</div><div class="lbl">Días</div></div>
+  </div>`;
+
+  // Week dots
+  const days=last7Days();
+  html+=`<div class="week-dots-wrap">
+    <div class="week-dots-labels">${days.map(d=>`<span>${shortDay(d)}</span>`).join('')}</div>
+    <div class="week-dots">${days.map(d=>`<div class="dot-day${state.logs[d]?' done':''}${d===today?' today-mark':''}"></div>`).join('')}</div>
+  </div>`;
+
+  if (gap&&gap>1) html+=`<div class="gap-banner"><div class="g-icon">⚠</div><div><div class="g-txt">Llevas ${gap} día${gap>1?'s':''} sin registrar</div><div class="g-sub">Seguimos desde hoy — tu semana continúa donde quedó.</div></div></div>`;
+
+  // Training selector
+  html+=`<div class="card">
+    <h3>¿Hiciste ejercicio hoy?</h3>
+    <p class="micro" style="margin-top:.2rem;">Selecciona uno o varios. Toca de nuevo para deseleccionar.</p>
+    <div class="train-scroll">
+      ${TRAIN_TYPES.map(t=>{
+        const isSel=types.includes(t.id);
+        const cls=isSel?trainChipClass(t.id,t.color):'';
+        return `<button class="train-chip ${cls}" data-tid="${t.id}">
+          <span class="tc-icon">${t.icon}</span>${t.label}
+        </button>`;
+      }).join('')}
+    </div>
+    ${renderTrainNote(types)}
+  </div>`;
+
+  // Session
+  html+=renderSessionView(log.session, today);
+
+  document.getElementById('hoy-content').innerHTML=html;
+  attachHoyEvents(w);
+}
+
+function renderTrainNote(types) {
+  if (!types.length) return `<div class="train-note">Sin entreno adicional — rutina base completa.</div>`;
+  const labels=types.map(id=>TRAIN_TYPES.find(t=>t.id===id)?.label||id);
+  let note='';
+  if (types.includes('legs')) note='Mediodía adaptado: sin sentadilla ni puente (ya los hiciste).';
+  else if (types.includes('cardio')) note='Caminata del mediodía saltada — cardio ya cubierto.';
+  else note='Mediodía con rutina base.';
+  return `<div class="train-note has-sel">✓ ${labels.join(' + ')} — ${note}</div>`;
+}
+
+const checkSVG=`<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polyline points="1.5,5.5 4,8.5 9.5,2.5" stroke="#0B0B0C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+function renderSessionView(session, dateKey) {
+  if (!session || !Array.isArray(session.morning) || !Array.isArray(session.midday) || !Array.isArray(session.evening)) {
+    return `<div class="card"><div class="micro" style="color:var(--text-2);">Rutina del día reconstruida — recarga si no ves los ejercicios.</div></div>`;
+  }
+  function block(title, badgeCls, emoji, items) {
+    if (!items.length) return '';
+    const real=items.filter(i=>!i.note);
+    const done=real.filter((_,ri)=>{
+      const idx=items.indexOf(real[ri]);
+      const id='chk-'+dateKey+'-'+title.replace(/\s/g,'')+'-'+idx;
+      return state.logs[dateKey]?.done?.[id];
+    }).length;
+    const pct=real.length?Math.round(done/real.length*100):0;
+    return `<div class="session-block">
+      <div class="block-header">
+        <span class="block-badge ${badgeCls}">${emoji} ${title}</span>
+        <span class="block-prog-txt">${done}/${real.length}</span>
+      </div>
+      <div class="block-bar"><div class="block-bar-fill" id="bar-${title.replace(/\s/g,'')}" style="width:${pct}%;"></div></div>
+      ${items.map((it,idx)=>{
+        if (it.note) return `<div class="check-item note"><div class="chk-label"><div class="txt">${it.text}</div></div></div>`;
+        const id='chk-'+dateKey+'-'+title.replace(/\s/g,'')+'-'+idx;
+        const isDone=!!state.logs[dateKey]?.done?.[id];
+        return `<label class="check-item${isDone?' completed':''}" for="${id}">
+          <input type="checkbox" id="${id}" class="session-check" data-id="${id}" data-date="${dateKey}" ${isDone?'checked':''}>
+          <div class="chk-box${isDone?' done':''}">${isDone?checkSVG:''}</div>
+          <div class="chk-label">
+            <div class="txt">${it.text}</div>
+            ${it.tip?`<div class="tip">${it.tip}</div>`:''}
+          </div>
+        </label>`;
+      }).join('')}
+    </div>`;
+  }
+  return `<div class="card">
+    ${block('Mañana','morning','🌅',session.morning)}
+    ${block('Mediodía','midday','⚡',session.midday)}
+    ${block('Noche','evening','🌙',session.evening)}
+  </div>`;
+}
+
+function attachHoyEvents(w) {
+  // Training multi-select toggle
+  document.querySelectorAll('.train-chip').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      const tid=chip.getAttribute('data-tid');
+      const today=todayISO();
+      const log=state.logs[today];
+      const types=log.trainedTypes||[];
+      const idx=types.indexOf(tid);
+      if (idx>-1) types.splice(idx,1); // deselect
+      else types.push(tid);             // select
+      log.trainedTypes=types;
+      log.session=buildSession(w,types);
+      // Keep existing done checkboxes
+      saveState(state);
+      renderHoy();
+    });
+  });
+
+  // Checkboxes
+  document.querySelectorAll('.session-check').forEach(cb=>{
+    cb.addEventListener('change',()=>{
+      const date=cb.getAttribute('data-date'), id=cb.getAttribute('data-id');
+      if (!state.logs[date].done) state.logs[date].done={};
+      state.logs[date].done[id]=cb.checked;
+      saveState(state);
+      const label=cb.closest('label'), box=label.querySelector('.chk-box');
+      if (cb.checked){label.classList.add('completed');box.classList.add('done');box.innerHTML=checkSVG;}
+      else{label.classList.remove('completed');box.classList.remove('done');box.innerHTML='';}
+      // Update block progress bar
+      const block=label.closest('.session-block');
+      if (block){
+        const all=block.querySelectorAll('.session-check');
+        const done=block.querySelectorAll('.session-check:checked');
+        const bar=block.querySelector('.block-bar-fill');
+        const txt=block.querySelector('.block-prog-txt');
+        if(bar){bar.style.width=Math.round(done.length/all.length*100)+'%';}
+        if(txt){txt.textContent=done.length+'/'+all.length;}
+      }
+    });
+  });
+}
+
+function daysSinceLastLog(){
+  const t=todayISO(); if(state.logs[t]) return 0;
+  const d=Object.keys(state.logs).sort().reverse(); return d.length?daysSince(d[0]):null;
+}
+
+// ── SUB-TABS helper ──
+function renderSubTabs(page, tabs, scrollable) {
+  const cur = subTabs[page] || tabs[0].id;
+  const cls = scrollable ? 'sub-tabs scroll-tabs' : 'sub-tabs';
+  return `<div class="${cls.trim()}">${tabs.map(t=>`<button class="sub-tab${cur===t.id?' active':''}" data-page="${page}" data-sub="${t.id}">${t.label}</button>`).join('')}</div>`;
+}
+function attachSubTabs(page, onSwitch) {
+  document.querySelectorAll(`[data-page="${page}"]`).forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      subTabs[page]=btn.getAttribute('data-sub');
+      onSwitch();
+    });
+  });
+}
+
+// ── WEEKLY CHECKIN GUARD ──
+function canDoWeeklyCheckin(w) {
+  const real=state.checkins.filter(c=>c.week>0);
+  if (!real.length) return true;
+  const last=real[real.length-1];
+  if (last.week>=w) return false;
+  return daysSince(last.date)>=7;
+}
+function daysUntilCheckin() {
+  const real=state.checkins.filter(c=>c.week>0);
+  if (!real.length) return 0;
+  const last=real[real.length-1];
+  return Math.max(0, 7-daysSince(last.date));
+}
+
+// ── WEEKLY INSIGHTS from daily logs ──
+function weeklyInsights(w) {
+  if (!state.startDate) return null;
+  const ws=addDays(state.startDate,(w-1)*7);
+  const logs=[];
+  for (let i=0;i<7;i++){const d=addDays(ws,i);const dl=(state.dailyLog||{})[d];if(dl?.saved)logs.push(dl);}
+  if (!logs.length) return null;
+  const wk=logs.filter(l=>l.kegelSec>0);
+  const wl=logs.filter(l=>l.libido>0);
+  const mTotal=logs.filter(l=>l.morning!==null&&l.morning!==undefined).length;
+  const mYes=logs.filter(l=>l.morning===true).length;
+  return {
+    days:logs.length,
+    maxKegel:wk.length?Math.max(...wk.map(l=>l.kegelSec)):null,
+    avgKegel:wk.length?(wk.reduce((s,l)=>s+l.kegelSec,0)/wk.length).toFixed(1):null,
+    avgLibido:wl.length?(wl.reduce((s,l)=>s+l.libido,0)/wl.length).toFixed(1):null,
+    morningRate:mTotal?Math.round(mYes/mTotal*100):null,
+    morningCount:mYes, morningTotal:mTotal,
+  };
+}
+
+// ── NOTIFICATIONS ──
+let swReg = null;
+async function setupNotifications() {
+  if (!('serviceWorker' in navigator)||!('Notification' in window)) return;
+  try {
+    swReg = await navigator.serviceWorker.register('/12-semanas-/sw.js');
+    await navigator.serviceWorker.ready;
+  } catch(e){}
+}
+
+async function requestNotifPermission() {
+  if (!('Notification' in window) || typeof Notification.requestPermission !== 'function') return false;
+  if (Notification.permission==='granted') return true;
+  const p = await Notification.requestPermission();
+  return p==='granted';
+}
+
+function scheduleNotifications() {
+  if (Notification.permission!=='granted') return;
+  const now=new Date(), today=todayISO();
+  const log=state.logs[today]||{}, done=log.done||{};
+  const session=log.session||buildSession(currentWeek(),[]);
+
+  function blockPct(block, name) {
+    const real=block.filter(i=>!i.note);
+    if(!real.length) return 100;
+    const cnt=real.filter((_,idx)=>done[`chk-${today}-${name}-${idx}`]).length;
+    return Math.round(cnt/real.length*100);
+  }
+  const mPct=blockPct(session.morning,'Mañana');
+  const mdPct=blockPct(session.midday,'Mediodía');
+  const ePct=blockPct(session.evening,'Noche');
+
+  const slots=[];
+  const setSlot=(h,min,tag,title,body)=>{
+    const t=new Date(now); t.setHours(h,min,0,0);
+    if(now<t) slots.push({delay:t-now,tag,title,body});
+  };
+
+  setSlot(7,30,'morning','🌅 Rutina matutina','Empieza el día con tus Kegels — 5 minutos y listo.');
+  setSlot(13,0,'midday',
+    mPct===100?'⚡ Mediodía — ¡mañana lista!':'⚡ Sesión del mediodía',
+    mPct===100?'Mañana ✓ completada. Hora del mediodía.':'¿Hiciste la rutina matutina? Aún puedes hacer el mediodía.');
+  const doneBlocks=[mPct,mdPct].filter(p=>p===100).length;
+  setSlot(21,0,'evening',
+    doneBlocks===2?'🔥 ¡Casi terminas el día!':'🌙 Cierre del día',
+    doneBlocks===2?'Mañana ✓ Mediodía ✓ — solo falta la rutina nocturna.':
+    doneBlocks===1?'Una sesión completa. Termina con la rutina de noche.':
+    'Aún estás a tiempo — 10 minutos para la rutina nocturna.');
+
+  // Notificación de alimentos si no hay nada registrado hoy
+  const todayFood = state.foodLog?.[today] || {};
+  const hasEaten = Object.values(todayFood).some(v=>v.eaten);
+  if (!hasEaten) {
+    setSlot(14,30,'food','🥗 Alimentos del día',
+      'No has registrado ningún alimento hoy. Recuerda incluir algo con nitratos o citrulina.');
+    setSlot(20,0,'food-eve','🥗 ¿Comiste algo para el NO?',
+      'Aún no registraste alimentos hoy — remolacha, rúcula, sandía o nueces marcan la diferencia.');
+  }
+
+  if (navigator.serviceWorker?.controller) {
+    navigator.serviceWorker.controller.postMessage({type:'SCHEDULE',slots});
+  } else if (swReg?.active) {
+    swReg.active.postMessage({type:'SCHEDULE',slots});
+  }
+}
+
+function showInAppBanner() {
+  const today=todayISO();
+  const log=state.logs[today]||{}, done=log.done||{};
+  const session=log.session||buildSession(currentWeek(),[]);
+  function blockPct(block,name){
+    const real=block.filter(i=>!i.note); if(!real.length) return 100;
+    return Math.round(block.filter((_,idx)=>done[`chk-${today}-${name}-${idx}`]).length/real.length*100);
+  }
+  const mPct=blockPct(session.morning,'Mañana');
+  const mdPct=blockPct(session.midday,'Mediodía');
+  const ePct=blockPct(session.evening,'Noche');
+  const h=new Date().getHours();
+  let icon='', msg='';
+  const todayFood = state.foodLog?.[today] || {};
+  const hasEaten = Object.values(todayFood).some(v=>v.eaten);
+  if (mPct===100&&mdPct===100&&ePct===100&&hasEaten){icon='🏆';msg='¡Día completo! 3 sesiones ✓ y alimentos registrados.';}
+  else if (mPct===100&&mdPct===100&&ePct===100){icon='🏆';msg='¡3 sesiones completas! No olvides registrar tus alimentos.';}
+  else if (mPct===100&&mdPct===100){icon='🔥';msg='Mañana ✓ Mediodía ✓ — falta la rutina nocturna.';}
+  else if (mPct===100&&h>=12){icon='⚡';msg='Mañana ✓ — ¿ya hiciste el mediodía?';}
+  else if (mPct<100&&h>=9&&h<12){icon='🌅';msg='No has empezado la rutina matutina todavía.';}
+  else if (mPct<100&&h>=12&&h<21){icon='⚠';msg='Mañana pendiente — puedes hacerla ahora junto al mediodía.';}
+  else if (h>=21&&ePct<100){icon='🌙';msg='Queda la rutina nocturna antes de dormir.';}
+  if (!msg&&!hasEaten&&h>=12){icon='🥗';msg='No has registrado alimentos hoy — ve a Nutrición y toca "Hoy comí".';}
+  if (!msg) return;
+  const banner=document.getElementById('notif-banner');
+  if (banner){
+    document.getElementById('notif-icon').textContent=icon;
+    document.getElementById('notif-txt').textContent=msg;
+    banner.classList.add('show');
+  }
+}
+document.getElementById('notif-close')?.addEventListener('click',()=>{
+  document.getElementById('notif-banner').classList.remove('show');
+});
+
+// ── RENDER NUTRICIÓN ──
+function foodKey(name){ return 'obs-'+name.replace(/[^a-zA-Z0-9]/g,'_'); }
+
+function renderNutricion() {
+  const cur = subTabs.nutricion || 'catalogo';
+  const today = todayISO();
+  if (!state.foodLog) state.foodLog={};
+  const todayLog = state.foodLog[today] || {};
+  const prefs = state.foodPrefs || {};
+
+  let html = renderSubTabs('nutricion',[
+    {id:'catalogo', label:'Catálogo NO'},
+    {id:'registro', label:'Hoy registré'},
+    {id:'fases', label:'Fases'},
+    {id:'cruces', label:'Cruces'},
+    {id:'protocolo', label:'Protocolo'},
+  ], true);
+
+  if (cur === 'catalogo') {
+    NO_CATS.forEach(cat=>{
+      const foods=NO_FOODS.filter(f=>f.cat===cat);
+      html+=`<div class="no-section">
+        <div class="no-section-title"><span class="ns-label">${cat}</span></div>
+        <div class="card" style="padding:.4rem 1.1rem;">
+          ${foods.map(f=>{
+            const noTengo=prefs[f.name]==='no';
+            const isEaten=!!todayLog[f.name]?.eaten;
+            const savedNote=todayLog[f.name]?.notes||'';
+            const ek=foodKey(f.name);
+            return `<div class="food-item">
+              <div class="food-icon">${f.icon}</div>
+              <div class="food-body">
+                <div class="food-name-row">
+                  <span class="food-item-name" style="${noTengo?'color:var(--text-3);text-decoration:line-through;':''}">${f.name}</span>
+                  <span class="food-por">${f.por}</span>
+                  <div class="stars">${stars(f.stars)}</div>
+                </div>
+                <div class="food-mech">${f.mech}</div>
+                <div class="food-note">${f.note}</div>
+                <div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;">
+                  <button class="ghost" style="font-size:11px;padding:3px 9px;border:1px solid var(--border-s);border-radius:99px;${!noTengo&&!isEaten?'color:var(--primary);border-color:var(--primary-border);background:var(--primary-dim);':''}"
+                    data-food="${f.name}" data-action="tengo">✓ Lo tengo</button>
+                  <button class="ghost" style="font-size:11px;padding:3px 9px;border:1px solid var(--border-s);border-radius:99px;${noTengo?'color:var(--danger);border-color:var(--danger-border);background:var(--danger-dim);':''}"
+                    data-food="${f.name}" data-action="no">✗ No tengo</button>
+                  <button class="ghost" style="font-size:11px;padding:3px 9px;border:1px solid var(--border-s);border-radius:99px;${isEaten?'color:var(--success);border-color:var(--success-border);background:var(--success-dim);':''}"
+                    data-food="${f.name}" data-action="comi" data-ek="${ek}">🍽 Hoy comí</button>
+                </div>
+                <div class="food-obs-form${isEaten?' open':''}" id="${ek}">
+                  <textarea class="obs" id="txt-${ek}" placeholder="Porción, preparación, sabor, combinaciones...">${savedNote}</textarea>
+                  <button class="obs-save" data-food="${f.name}" data-action="save-obs" data-ek="${ek}">Guardar nota</button>
+                </div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    });
+    const w=currentWeek();
+    html+=`<div class="card" style="background:var(--card-el);">
+      <div class="overline" style="margin-bottom:.5rem;">Suplementación — Semana ${w}</div>
+      <div class="micro" style="color:var(--text-2);line-height:1.7;">${suppNote(w)}</div>
+    </div>`;
+  } else if (cur === 'fases') {
+    html += renderNutriFases();
+  } else if (cur === 'cruces') {
+    html += renderNutriCruces();
+  } else if (cur === 'protocolo') {
+    html += renderNutriProtocolo();
+  } else {
+    // ── REGISTRO pestaña ──
+    const eaten = Object.entries(todayLog).filter(([,v])=>v.eaten);
+    if (!eaten.length) {
+      html+=`<div style="text-align:center;padding:2rem 1rem;">
+        <div style="font-size:36px;margin-bottom:.6rem;">🍽</div>
+        <div style="font-size:14px;color:var(--text-2);font-weight:600;margin-bottom:.3rem;">Nada registrado hoy</div>
+        <div class="micro">Ve al catálogo y toca "Hoy comí" en cada alimento que hayas consumido.</div>
+      </div>`;
+    } else {
+      html+=`<div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;">
+          <h3>Hoy ingerí</h3>
+          <span style="font-size:12px;color:var(--text-3);">${eaten.length} alimento${eaten.length>1?'s':''}</span>
+        </div>
+        ${eaten.map(([name,v])=>{
+          const fd=NO_FOODS.find(x=>x.name===name);
+          const ek=foodKey(name);
+          return `<div class="eaten-row" id="erow-${ek}">
+            <span style="font-size:20px;flex-shrink:0;">${fd?.icon||'🍽'}</span>
+            <div style="flex:1;">
+              <div style="font-size:13.5px;font-weight:600;color:var(--text-1);">${name}</div>
+              <div style="font-size:11px;color:var(--text-3);">${fd?.por||''} · ${stars(fd?.stars||0)}</div>
+              ${v.notes?`<div class="eaten-note-txt">"${v.notes}"</div>`:''}
+              <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;">
+                <button class="ghost" style="font-size:11px;padding:3px 8px;border:1px solid var(--border-s);border-radius:99px;"
+                  data-food="${name}" data-action="edit-obs" data-ek="${ek}">✏ Editar nota</button>
+                <button class="ghost" style="font-size:11px;padding:3px 8px;border:1px solid var(--danger-border);border-radius:99px;color:var(--danger);"
+                  data-food="${name}" data-action="remove-comi">✕ Quitar</button>
+              </div>
+              <div class="food-obs-form" id="${ek}">
+                <textarea class="obs" id="txt-${ek}" placeholder="Porción, preparación, sabor...">${v.notes||''}</textarea>
+                <button class="obs-save" data-food="${name}" data-action="save-obs" data-ek="${ek}">Guardar nota</button>
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+
+      // Historial últimos 3 días con registro
+      const prevDays=[];
+      for(let i=1;i<=14;i++){
+        const d=addDays(today,-i);
+        const fl=(state.foodLog||{})[d];
+        if(fl&&Object.values(fl).some(v=>v.eaten)) prevDays.push({d,fl});
+        if(prevDays.length>=3) break;
+      }
+      if(prevDays.length){
+        html+=`<div class="card" style="background:var(--card-el);">
+          <h3 style="margin-bottom:.7rem;">Días anteriores</h3>
+          ${prevDays.map(({d,fl})=>{
+            const items=Object.entries(fl).filter(([,v])=>v.eaten);
+            return `<div style="padding:7px 0;border-bottom:1px solid var(--border);">
+              <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;">${shortDay(d)} ${d.slice(5)}</div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                ${items.map(([name])=>{const fd=NO_FOODS.find(x=>x.name===name);return`<span class="h-tag">${fd?.icon||'🍽'} ${name}</span>`;}).join('')}
+              </div>
+            </div>`;
+          }).join('')}
+        </div>`;
+      }
+    }
+  }
+
+  document.getElementById('nutricion-content').innerHTML=html;
+  attachSubTabs('nutricion', renderNutricion);
+
+  document.querySelectorAll('[data-action]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const food=btn.getAttribute('data-food');
+      const action=btn.getAttribute('data-action');
+      const ek=btn.getAttribute('data-ek');
+      if (!state.foodLog[today]) state.foodLog[today]={};
+
+      if (action==='tengo') {
+        delete state.foodPrefs[food]; saveState(state); renderNutricion();
+      } else if (action==='no') {
+        state.foodPrefs[food]=state.foodPrefs[food]==='no'?null:'no'; saveState(state); renderNutricion();
+      } else if (action==='comi') {
+        if (state.foodLog[today][food]?.eaten) {
+          delete state.foodLog[today][food]; saveState(state); renderNutricion();
+        } else {
+          state.foodLog[today][food]={eaten:true,notes:''};
+          saveState(state);
+          const form=document.getElementById(ek);
+          if(form){form.classList.add('open');form.querySelector('textarea')?.focus();}
+          btn.style.cssText='font-size:11px;padding:3px 9px;border:1px solid var(--success-border);border-radius:99px;color:var(--success);background:var(--success-dim);';
+        }
+      } else if (action==='remove-comi') {
+        delete state.foodLog[today][food]; saveState(state); renderNutricion();
+      } else if (action==='edit-obs') {
+        const form=document.getElementById(ek);
+        if(form){form.classList.toggle('open');form.querySelector('textarea')?.focus();}
+      } else if (action==='save-obs') {
+        const txt=document.getElementById('txt-'+ek)?.value.trim()||'';
+        if(!state.foodLog[today][food]) state.foodLog[today][food]={eaten:true};
+        state.foodLog[today][food].notes=txt;
+        saveState(state); showToast('Nota guardada ✓'); renderNutricion();
+      }
+    });
+  });
+}
+
+function suppNote(w) {
+  if (w<3) return 'Sem. 1-2: sin suplementos — consolida primero alimentación y ejercicio.';
+  if (w<5) return '<strong style="color:var(--text-1);">L-Citrulina 1.5 g/día</strong> (750 mg mañana + 750 mg tarde) — mejor perfil de seguridad para iniciar. Sin contraindicación médica conocida.';
+  if (w<9) return '<strong style="color:var(--text-1);">Panax Ginseng 900 mg × 2-3 veces/día</strong> — mayor evidencia clínica en DE. Mínimo 8 semanas para ver efecto. Evaluar con médico si tomas anticoagulantes.';
+  return 'Mantén lo que funcionó. Antes de agregar Vitamina D o Zinc, confirma deficiencia con examen de sangre — el exceso de zinc es contraproducente.';
+}
+
+// ── RENDER PROGRESO ──
+function renderProgreso() {
+  const w=currentWeek();
+  const today=todayISO();
+  if (!state.dailyLog) state.dailyLog={};
+  const dl=state.dailyLog[today]||{};
+  const dlSaved=!!dl.saved;
+  const cur=subTabs.progreso||'hoy';
+
+  let html = renderSubTabs('progreso',[
+    {id:'hoy',     label:'Registro del día'},
+    {id:'semanal', label:'Evaluación semanal'},
+  ]);
+
+  if (cur==='hoy') {
+    // ── Gráfico (compacto) ──
+    if (state.checkins.length>1) {
+      html+=`<div class="card">
+        <h3 style="margin-bottom:.7rem;">Evolución</h3>
+        <div style="position:relative;height:180px;"><canvas id="progressChart"></canvas></div>
+      </div>`;
+    }
+
+    // ── Registro del día ──
+    html+=`<div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;">
+        <h3>Hoy — ${today.slice(5)}</h3>
+        ${dlSaved?`<span class="daily-saved-badge">✓ Guardado</span>`:''}
+      </div>
+      <p class="micro" style="margin-bottom:.9rem;">Datos diarios para detectar patrones que la evaluación semanal no muestra.</p>
+
+      <div style="margin-bottom:.9rem;">
+        <div class="section-label">Kegel sostenido — mejor serie de hoy</div>
+        <div class="range-row">
+          <input type="range" id="dl-kegel" min="1" max="30" step="1" value="${dl.kegelSec||5}">
+          <span id="dl-kegel-out" class="range-val">${dl.kegelSec||5}s</span>
+        </div>
+        <p class="micro" style="margin-top:2px;">Anota el máximo que sostuviste sin soltar.</p>
+      </div>
+
+      <div class="section-div"></div>
+      <div style="margin-bottom:.9rem;">
+        <div class="section-label">Flicks — rep rápidas totales del día</div>
+        <div class="num-input-row">
+          <input type="number" class="num-input" id="dl-flicks" min="0" max="500" value="${dl.flicks??0}">
+          <span class="micro">rep (suma todas las series)</span>
+        </div>
+      </div>
+
+      <div class="section-div"></div>
+      <div style="margin-bottom:.9rem;">
+        <div class="section-label">¿Erección matutina hoy?</div>
+        <div class="yn-row">
+          <button class="yn-btn${dl.morning===true?' sel-yes':''}" id="dl-morning-yes" data-dl-morning="yes">✓ Sí</button>
+          <button class="yn-btn${dl.morning===false?' sel-no':''}" id="dl-morning-no" data-dl-morning="no">✗ No</button>
+        </div>
+        <p class="micro" style="margin-top:3px;">Aunque no la recuerdes completa — si había algo al despertar, cuenta como sí.</p>
+      </div>
+
+      <div class="section-div"></div>
+      <div style="margin-bottom:.9rem;">
+        <div class="section-label">Libido hoy (1–10)</div>
+        <div class="range-row">
+          <input type="range" id="dl-libido" min="1" max="10" step="1" value="${dl.libido||5}">
+          <span id="dl-libido-out" class="range-val sc">${dl.libido||5}</span>
+        </div>
+        <div class="libido-guide">
+          <div class="libido-guide-row"><strong>1–2:</strong> Sin deseo. Nada surge solo, sin respuesta a estímulos.</div>
+          <div class="libido-guide-row"><strong>3–4:</strong> Bajo. Solo responde con estímulo directo.</div>
+          <div class="libido-guide-row"><strong>5–6:</strong> Normal. Surge espontáneamente en algún momento.</div>
+          <div class="libido-guide-row"><strong>7–8:</strong> Bueno. Pensamientos frecuentes, respuesta rápida.</div>
+          <div class="libido-guide-row"><strong>9–10:</strong> Alto. Deseo persistente, energía sexual elevada.</div>
+        </div>
+      </div>
+
+      <div class="section-div"></div>
+      <div style="margin-bottom:1rem;">
+        <div class="section-label">Observaciones libres</div>
+        <textarea class="obs" id="dl-notes" style="margin-top:5px;" placeholder="Dormí mal, estrés, noté más firmeza, el kegel se sintió más fácil, energía alta...">${dl.notes||''}</textarea>
+      </div>
+
+      <button class="primary" id="btn-save-daily" style="width:100%;padding:13px;">${dlSaved?'Actualizar registro':'Guardar registro de hoy'}</button>
+    </div>`;
+
+  } else {
+    // ── EVALUACIÓN SEMANAL ──
+    const canDo = canDoWeeklyCheckin(w);
+    const daysLeft = daysUntilCheckin();
+    const ins = weeklyInsights(w);
+    const alreadyDone = state.checkins.filter(c=>c.week>0&&c.week>=w).length>0;
+
+    if (state.checkins.length>1) {
+      html+=`<div class="card">
+        <h3 style="margin-bottom:.7rem;">Evolución</h3>
+        <div style="position:relative;height:180px;"><canvas id="progressChart"></canvas></div>
+      </div>`;
+    }
+
+    // Insights de la semana desde registros diarios
+    if (ins) {
+      html+=`<div class="insight-box">
+        <div class="overline" style="margin-bottom:.6rem;">Tus datos esta semana (${ins.days} día${ins.days>1?'s':''})</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+          ${ins.maxKegel?`<div style="text-align:center;"><div class="insight-val">${ins.maxKegel}s</div><div class="insight-lbl">Kegel máx.</div></div>`:''}
+          ${ins.avgKegel?`<div style="text-align:center;"><div class="insight-val">${ins.avgKegel}s</div><div class="insight-lbl">Kegel prom.</div></div>`:''}
+          ${ins.avgLibido?`<div style="text-align:center;"><div class="insight-val" style="color:var(--success);">${ins.avgLibido}</div><div class="insight-lbl">Libido prom.</div></div>`:''}
+          ${ins.morningRate!==null?`<div style="text-align:center;"><div class="insight-val" style="color:var(--warning);">${ins.morningRate}%</div><div class="insight-lbl">Erec. mat.</div></div>`:''}
+        </div>
+        <p class="micro" style="margin-top:.6rem;">Estos valores se pre-cargan en la evaluación semanal como referencia.</p>
+      </div>`;
+    }
+
+    if (alreadyDone) {
+      html+=`<div class="blocked-banner">
+        <div class="b-icon">✓</div>
+        <div class="b-title" style="color:var(--success);">Evaluación sem. ${w} guardada</div>
+        <div class="b-sub">La próxima evaluación se habilitará cuando pasen 7 días desde la última.</div>
+      </div>`;
+    } else if (!canDo) {
+      html+=`<div class="blocked-banner">
+        <div class="b-icon">🔒</div>
+        <div class="b-title">Evaluación bloqueada</div>
+        <div class="b-sub">Faltan <strong style="color:var(--primary);">${daysLeft} día${daysLeft>1?'s':''}</strong> para la próxima evaluación semanal.<br>Sigue registrando tus datos diarios — eso sí puedes hacerlo.</div>
+      </div>`;
+    } else {
+      const kDef = ins?.maxKegel || dl.kegelSec || state.baseline?.kegelSec || 5;
+      const lDef = ins?.avgLibido ? Math.round(ins.avgLibido) : (dl.libido||5);
+      html+=`<div class="card">
+        <h3 style="margin-bottom:.3rem;">Evaluación — Semana ${w}</h3>
+        <p class="micro" style="margin-bottom:1rem;">Resumen semanal para el gráfico de evolución.${ins?' Los valores de referencia vienen de tus registros diarios.':''}</p>
+
+        <div style="margin-bottom:.9rem;">
+          <div class="section-label">1. Firmeza de erección (EHS 1–4)</div>
+          <div class="ehs-grid">${[1,2,3,4].map(v=>`<button class="ehs-btn" data-v="${v}">${v}</button>`).join('')}</div>
+          <div class="ehs-desc" id="ehs-desc">1 = crece sin endurecer · 2 = duro pero no suficiente · 3 = suficiente · 4 = rígido</div>
+        </div>
+        <div class="section-div"></div>
+        <div style="margin-bottom:.9rem;">
+          <div class="section-label">2. Máximo Kegel sostenido esta semana</div>
+          <div class="range-row">
+            <input type="range" id="kegel-range" min="2" max="30" step="1" value="${kDef}">
+            <span id="kegel-out" class="range-val">${kDef}s</span>
+          </div>
+        </div>
+        <div class="section-div"></div>
+        <div style="margin-bottom:.9rem;">
+          <div class="section-label">3. Erecciones matutinas esta semana (0–7)</div>
+          <div class="morning-grid">${[0,1,2,3,4,5,6,7].map(n=>`<button class="me-btn${ins?.morningCount===n?' sel':''}" data-me="${n}">${n}</button>`).join('')}</div>
+          <div class="ehs-desc" id="me-desc">${ins?.morningRate!==null?`Tus registros dicen: ${ins.morningCount}/${ins.morningTotal} días con erección matutina`:'Meta: 5-7 / semana'}</div>
+        </div>
+        <div class="section-div"></div>
+        <div style="margin-bottom:1.1rem;">
+          <div class="section-label">4. Libido promedio de la semana (1–10)</div>
+          <div class="range-row">
+            <input type="range" id="libido-range" min="1" max="10" step="1" value="${lDef}">
+            <span id="libido-out" class="range-val sc">${lDef}</span>
+          </div>
+          <div class="libido-labels"><span>1 – Sin deseo</span><span>5 – Normal</span><span>10 – Alto</span></div>
+        </div>
+        <button class="primary" id="btn-save-checkin" style="width:100%;padding:13px;">Guardar evaluación semana ${w}</button>
+      </div>`;
+    }
+  }
+
+  document.getElementById('progreso-content').innerHTML=html;
+  if (state.checkins.length>1) setTimeout(renderChart,0);
+  attachSubTabs('progreso', renderProgreso);
+
+  // Daily log events
+  const dlK=document.getElementById('dl-kegel');
+  if(dlK) dlK.addEventListener('input',()=>document.getElementById('dl-kegel-out').textContent=dlK.value+'s');
+  const dlL=document.getElementById('dl-libido');
+  if(dlL) dlL.addEventListener('input',()=>document.getElementById('dl-libido-out').textContent=dlL.value);
+  dlMorning = dl.morning??null;
+  document.querySelectorAll('[data-dl-morning]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const val=b.getAttribute('data-dl-morning')==='yes';
+      dlMorning = dlMorning===val ? null : val;
+      document.getElementById('dl-morning-yes').className='yn-btn'+(dlMorning===true?' sel-yes':'');
+      document.getElementById('dl-morning-no').className='yn-btn'+(dlMorning===false?' sel-no':'');
+    });
+  });
+  document.getElementById('btn-save-daily')?.addEventListener('click',()=>{
+    if(!state.dailyLog) state.dailyLog={};
+    state.dailyLog[today]={
+      saved:true,
+      kegelSec:parseInt(document.getElementById('dl-kegel').value),
+      flicks:parseInt(document.getElementById('dl-flicks')?.value)||0,
+      morning:dlMorning,
+      libido:parseInt(document.getElementById('dl-libido').value),
+      notes:document.getElementById('dl-notes').value.trim()
+    };
+    saveState(state); showToast('Registro guardado ✓'); renderProgreso();
+  });
+
+  // Weekly checkin events
+  selectedEhs=null; selectedMorning=null;
+  if (ins?.morningCount!=null) selectedMorning=ins.morningCount;
+  document.querySelectorAll('.ehs-btn').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('.ehs-btn').forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel'); selectedEhs=parseInt(b.getAttribute('data-v'));
+      const L=['','Crece pero no se endurece','Se endurece pero no lo suficiente','Suficientemente duro, no completamente rígido','Completamente rígido'];
+      const d=document.getElementById('ehs-desc'); if(d) d.textContent=L[selectedEhs];
+    });
+  });
+  document.querySelectorAll('.me-btn').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('.me-btn').forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel'); selectedMorning=parseInt(b.getAttribute('data-me'));
+      const me=selectedMorning, d=document.getElementById('me-desc');
+      if(d) d.textContent=me>=5?`${me} — en rango óptimo ✓`:me>=3?`${me} — por debajo, seguimos`:`${me} — construyendo base`;
+    });
+  });
+  const kR=document.getElementById('kegel-range');
+  if(kR){const kO=document.getElementById('kegel-out');kR.addEventListener('input',()=>kO.textContent=kR.value+'s');}
+  const lR=document.getElementById('libido-range');
+  if(lR){const lO=document.getElementById('libido-out');lR.addEventListener('input',()=>lO.textContent=lR.value);}
+  document.getElementById('btn-save-checkin')?.addEventListener('click',()=>{
+    if(selectedEhs===null){showToast('Selecciona tu nivel EHS primero');return;}
+    if(selectedMorning===null){showToast('Selecciona las erecciones matutinas');return;}
+    const last2=state.checkins[state.checkins.length-1];
+    if(last2&&last2.date===today&&last2.week===w){showToast('Ya guardaste la evaluación de hoy');return;}
+    state.checkins.push({week:w,ehs:selectedEhs,kegelSec:parseInt(document.getElementById('kegel-range').value),morningErections:selectedMorning,libido:parseInt(document.getElementById('libido-range').value),date:today});
+    saveState(state); showToast('Evaluación semanal guardada ✓'); renderProgreso();
+  });
+}
+
+function renderChart() {
+  const canvas=document.getElementById('progressChart');
+  if(!canvas) return;
+  if(chartInstance) chartInstance.destroy();
+  Chart.defaults.color='#6B6B70';
+  chartInstance=new Chart(canvas,{
+    type:'line',
+    data:{
+      labels:state.checkins.map(c=>c.week===0?'Inicio':'Sem '+c.week),
+      datasets:[
+        {label:'EHS (1-4)',data:state.checkins.map(c=>c.ehs),borderColor:'#C6F24E',backgroundColor:'rgba(198,242,78,0.06)',fill:true,yAxisID:'y1',tension:.3,pointRadius:3,borderWidth:1.5,pointBackgroundColor:'#C6F24E'},
+        {label:'Kegel (s)',data:state.checkins.map(c=>c.kegelSec),borderColor:'#54D27A',backgroundColor:'rgba(84,210,122,0.05)',fill:true,yAxisID:'y2',tension:.3,pointRadius:3,borderWidth:1.5,pointBackgroundColor:'#54D27A'},
+        {label:'Libido',data:state.checkins.map(c=>c.libido??null),borderColor:'#A1A1A6',backgroundColor:'transparent',fill:false,yAxisID:'y2',tension:.3,pointRadius:3,borderWidth:1.5,borderDash:[4,3],pointBackgroundColor:'#A1A1A6',spanGaps:true},
+        {label:'Erec. mat.',data:state.checkins.map(c=>c.morningErections??null),borderColor:'#FBA94C',backgroundColor:'transparent',fill:false,yAxisID:'y1',tension:.3,pointRadius:3,borderWidth:1.5,borderDash:[2,4],pointBackgroundColor:'#FBA94C',spanGaps:true},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,font:{size:10},color:'#6B6B70',padding:10}},tooltip:{backgroundColor:'#161618',titleColor:'#FAFAFA',bodyColor:'#A1A1A6',borderColor:'rgba(255,255,255,0.07)',borderWidth:1,cornerRadius:8,padding:9}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6B6B70',font:{size:10}}},y1:{type:'linear',position:'left',min:0,max:7,ticks:{stepSize:1,color:'#6B6B70',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},y2:{type:'linear',position:'right',min:0,suggestedMax:20,grid:{drawOnChartArea:false},ticks:{color:'#6B6B70',font:{size:10}}}}}
+  });
+}
+
+// ── RENDER HISTORIAL ──
+function renderHistorial() {
+  const days=last7Days().reverse(), today=todayISO();
+  let html=`<div class="card">
+    <h3 style="margin-bottom:.9rem;">Últimos 7 días</h3>
+    ${days.map(d=>{
+      const log=state.logs[d], isToday=d===today;
+      const dl=(state.dailyLog||{})[d];
+      const fl=(state.foodLog||{})[d];
+      const label=isToday?'Hoy':shortDay(d)+' '+d.slice(8);
+      const hasSomething=log||dl?.saved;
+      if(!hasSomething) return `<div class="hist-day"><div class="hist-main"><div class="history-date">${label}</div><div class="h-dot miss"></div><div class="h-label" style="color:var(--text-3);">Sin registro</div></div></div>`;
+      const doneCnt=log?.done?Object.values(log.done).filter(Boolean).length:0;
+      const items=log?[...(log.session?.morning||[]),...(log.session?.midday||[]),...(log.session?.evening||[])].filter(i=>!i.note).length:0;
+      const types=(log?.trainedTypes||[]).map(id=>TRAIN_TYPES.find(t=>t.id===id)?.label).filter(Boolean).join('+');
+      const eaten=fl?Object.keys(fl).filter(k=>fl[k].eaten):[];
+      return `<div class="hist-day">
+        <div class="hist-main">
+          <div class="history-date">${label}</div>
+          <div class="h-dot ${log?'done':'miss'}"></div>
+          <div class="h-label">${types||'Solo rutina'}</div>
+          ${log?`<div class="h-checks">${doneCnt}/${items}</div>`:''}
+        </div>
+        <div class="hist-tags">
+          ${dl?.kegelSec?`<span class="h-tag">💪 ${dl.kegelSec}s</span>`:''}
+          ${dl?.flicks?`<span class="h-tag">⚡ ${dl.flicks} flicks</span>`:''}
+          ${dl?.morning===true?`<span class="h-tag-success">☀ Erec. ✓</span>`:dl?.morning===false?`<span class="h-tag-warn">☀ Erec. ✗</span>`:''}
+          ${dl?.libido?`<span class="h-tag">🔥 Libido ${dl.libido}/10</span>`:''}
+          ${eaten.map(n=>{const fd=NO_FOODS.find(x=>x.name===n);return`<span class="h-tag">${fd?.icon||'🍽'} ${n.split(' ')[0]}</span>`;}).join('')}
+          ${dl?.notes?`<span class="h-tag" style="color:var(--text-2);max-width:200px;white-space:normal;">"${dl.notes.slice(0,50)}${dl.notes.length>50?'…':''}"</span>`:''}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  html+=`<details style="margin-bottom:.8rem;">
+    <summary><span class="chev">▸</span><span>Respaldar o transferir datos</span></summary>
+    <div style="margin-top:.5rem;">
+      <p class="micro" style="margin-bottom:.7rem;">Tu progreso se guarda en este navegador.</p>
+      <div class="btn-row" style="margin-bottom:.6rem;">
+        <button id="btn-export">⬆ Exportar</button>
+        <button id="btn-import-toggle">⬇ Importar</button>
+        <button id="btn-print">🖨 PDF</button>
+      </div>
+      <div id="export-area" style="display:none;">
+        <textarea id="export-text" readonly></textarea>
+        <p class="micro" style="margin-top:.3rem;">Copia este texto y pégalo en el otro dispositivo.</p>
+      </div>
+      <div id="import-area" style="display:none;">
+        <textarea id="import-text" placeholder="Pega aquí el código exportado..."></textarea>
+        <button class="primary" id="btn-import-confirm" style="margin-top:.5rem;width:100%;">Importar y reemplazar datos</button>
+      </div>
+    </div>
+  </details>
+
+  <div style="margin-bottom:1rem;">
+    <p class="micro" style="margin-bottom:.6rem;">¿Quieres empezar el programa desde cero?</p>
+    <button class="danger-out" id="btn-reset" style="width:100%;">Reiniciar programa desde cero</button>
+  </div>`;
+
+  document.getElementById('historial-content').innerHTML=html;
+
+  // Data events
+  document.getElementById('btn-export').addEventListener('click',()=>{
+    const enc=btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+    document.getElementById('export-area').style.display='block';
+    document.getElementById('import-area').style.display='none';
+    document.getElementById('export-text').value=enc;
+    document.getElementById('export-text').select();
+  });
+  document.getElementById('btn-import-toggle').addEventListener('click',()=>{
+    document.getElementById('import-area').style.display='block';
+    document.getElementById('export-area').style.display='none';
+  });
+  document.getElementById('btn-import-confirm')?.addEventListener('click',()=>{
+    const txt=document.getElementById('import-text').value.trim();
+    if(!txt){showToast('Pega un código primero');return;}
+    try{const p=JSON.parse(decodeURIComponent(escape(atob(txt))));if(!('startDate'in p)||!('checkins'in p))throw 0;state=p;saveState(state);showToast('Datos importados');renderTab(currentTab);}
+    catch(e){showToast('Código inválido');}
+  });
+  document.getElementById('btn-print').addEventListener('click',()=>window.print());
+
+  let resetPending=false;
+  document.getElementById('btn-reset').addEventListener('click',function(){
+    if(!resetPending){
+      resetPending=true; this.textContent='¿Seguro? Toca otra vez para confirmar';
+      setTimeout(()=>{resetPending=false;this.textContent='Reiniciar programa desde cero';},3500);
+      return;
+    }
+    [STORAGE_KEY,'pelvic_program_v2','pelvic_program_v1'].forEach(k=>localStorage.removeItem(k));
+    state={startDate:null,baseline:null,logs:{},checkins:{},foodPrefs:{}};
+    showToast('Programa reiniciado');
+    renderOnboarding();
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelector('[data-tab="hoy"]').classList.add('active');
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-hoy').classList.add('active');
+    currentTab='hoy';
+  });
+}
+
+// ── ONBOARDING ──
+function renderOnboarding() {
+  const EHS_LABELS=['Crece pero no se endurece','Se endurece pero no lo suficiente para penetrar','Suficientemente duro, no completamente rígido','Completamente rígido'];
+  document.getElementById('hoy-content').innerHTML=`
+  <div class="onboarding-wrap">
+    <div class="onboarding-hero">
+      <div class="hero-icon">🎯</div>
+      <h3 style="font-size:18px;margin-bottom:.3rem;">Tu línea de partida</h3>
+      <p class="micro">Esto se compara contigo mismo cada semana.</p>
+    </div>
+    <div style="margin-bottom:1.1rem;">
+      <div class="section-label" style="margin-bottom:.5rem;">¿Cómo describirías tu firmeza de erección actual?</div>
+      ${EHS_LABELS.map((l,i)=>`<label class="opt"><input type="radio" name="ehs-base" value="${i+1}"><div><span style="color:var(--primary);font-weight:600;">${i+1}</span> — ${l}</div></label>`).join('')}
+    </div>
+    <div style="margin-bottom:1.3rem;">
+      <div class="section-label" style="margin-bottom:.5rem;">Sin práctica previa, ¿cuántos segundos puedes sostener un Kegel?</div>
+      <div class="range-row">
+        <input type="range" id="base-kegel-range" min="1" max="15" step="1" value="4">
+        <span id="base-kegel-out" class="range-val">4s</span>
+      </div>
+      <p class="micro" style="margin-top:.4rem;">Prueba ahora: acostado, contrae como si detuvieras el flujo de orina, cuenta hasta que se relaje solo.</p>
+    </div>
+    <button class="primary" id="btn-start-program" style="width:100%;padding:14px;font-size:15px;">Comenzar programa de 12 semanas</button>
+  </div>`;
+
+  document.getElementById('hoy-sub').textContent='Configura tu punto de partida';
+  const sl=document.getElementById('base-kegel-range'), out=document.getElementById('base-kegel-out');
+  sl.addEventListener('input',()=>out.textContent=sl.value+'s');
+  document.getElementById('btn-start-program').addEventListener('click',()=>{
+    const r=document.querySelector('input[name="ehs-base"]:checked');
+    const ehsVal=r?parseInt(r.value):2, kegelVal=parseInt(sl.value);
+    state.startDate=todayISO();
+    state.baseline={ehs:ehsVal,kegelSec:kegelVal,date:todayISO()};
+    state.checkins=[{week:0,ehs:ehsVal,kegelSec:kegelVal,morningErections:null,libido:null,date:todayISO()}];
+    state.logs={}; state.foodPrefs={};
+    saveState(state); renderTab('hoy');
+  });
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+// ── INIT ──
+try {
+  if (!state.startDate) renderOnboarding();
+  else {
+    renderTab('hoy');
+    showInAppBanner();
+    setupNotifications().then(()=>{
+      if (Notification.permission==='granted') {
+        scheduleNotifications();
+      } else if (Notification.permission==='default') {
+        setTimeout(async ()=>{
+          const granted = await requestNotifPermission();
+          if (granted) { scheduleNotifications(); showToast('Notificaciones activadas ✓'); }
+        }, 3000);
+      }
+    });
+  }
+} catch (e) {
+  console.error('Init error:', e);
+  document.getElementById('hoy-sub').textContent = 'Error al cargar';
+  document.getElementById('hoy-content').innerHTML = `<div class="card" style="text-align:center;padding:1.5rem;">
+    <div style="font-size:32px;margin-bottom:.6rem;">⚠</div>
+    <h3 style="margin-bottom:.4rem;">No se pudo cargar el programa</h3>
+    <p class="micro" style="margin-bottom:1rem;">Los datos guardados pueden estar dañados. Puedes reiniciar sin perder nada crítico.</p>
+    <button class="primary" id="btn-recover" style="width:100%;">Reparar y continuar</button>
+  </div>`;
+  document.getElementById('btn-recover')?.addEventListener('click', ()=>{
+    const today = todayISO();
+    const w = currentWeek();
+    if (state.startDate) ensureTodayLog(w);
+    else state = { startDate:null, baseline:null, logs:{}, checkins:[], foodPrefs:{}, foodLog:{}, dailyLog:{} };
+    saveState(state);
+    location.reload();
+  });
+}
+</script>
+</body>
+</html>

@@ -27,7 +27,7 @@ self.addEventListener('message', event => {
           icon: SCOPE + 'icon-192.png',
           badge: SCOPE + 'icon-192.png',
           tag: slot.tag || 'rutina',
-          data: { url: SCOPE + 'programa.html' },
+          data: { url: SCOPE },
           requireInteraction: false,
           silent: false,
         });
@@ -40,18 +40,18 @@ self.addEventListener('message', event => {
       body: data.body,
       icon: SCOPE + 'icon-192.png',
       tag: data.tag || 'now',
-      data: { url: SCOPE + 'programa.html' },
+      data: { url: SCOPE },
     });
   }
 });
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-  const target = event.notification.data?.url || SCOPE + 'programa.html';
+  const target = event.notification.data?.url || SCOPE;
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
       for (const client of clients) {
-        if (client.url.includes('programa.html') && 'focus' in client) {
+        if (client.url.includes('/12-semanas-') && 'focus' in client) {
           return client.focus();
         }
       }
