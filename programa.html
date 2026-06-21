@@ -258,6 +258,29 @@ textarea::placeholder{color:var(--text-3);}
 /* ── LIVE DOT ── */
 .live-dot{width:7px;height:7px;border-radius:50%;background:var(--primary);animation:lp 2s infinite;display:inline-block;}
 @keyframes lp{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* ── FOOD LOG (hoy comí) ── */
+.eaten-today-card{background:var(--card-el);border:1px solid var(--success-border);border-radius:var(--r-lg);padding:.9rem 1.1rem;margin-bottom:.9rem;}
+.eaten-row{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);}
+.eaten-row:last-child{border-bottom:none;}
+.eaten-note-txt{font-size:11px;color:var(--text-3);font-style:italic;margin-top:2px;}
+.food-obs-form{margin-top:8px;display:none;}
+.food-obs-form.open{display:block;}
+textarea.obs{font-family:inherit;font-size:12.5px;min-height:56px;color:var(--text-1);resize:none;}
+.obs-save{font-size:11px;padding:5px 14px;margin-top:5px;border-radius:99px;background:var(--primary-dim);border:1px solid var(--primary-border);color:var(--primary);}
+
+/* ── DAILY LOG (registro diario en progreso) ── */
+.yn-row{display:flex;gap:6px;margin-bottom:5px;}
+.yn-btn{flex:1;padding:12px 4px;font-size:16px;font-weight:600;border-radius:var(--r-sm);background:var(--card-el);border:1.5px solid var(--border-s);color:var(--text-2);transition:all .12s;font-family:inherit;cursor:pointer;}
+.yn-btn.sel-yes{background:var(--success-dim);border-color:var(--success);color:var(--success);}
+.yn-btn.sel-no{background:var(--danger-dim);border-color:var(--danger-border);color:var(--danger);}
+.num-input-row{display:flex;align-items:center;gap:10px;}
+.num-input{width:70px;background:var(--card-el);border:1.5px solid var(--border-s);border-radius:var(--r-sm);color:var(--text-1);font-family:inherit;font-size:20px;font-weight:600;padding:8px;text-align:center;outline:none;}
+.num-input:focus{border-color:var(--primary);}
+.libido-guide{background:var(--card-el);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem .9rem;margin-top:.6rem;}
+.libido-guide-row{font-size:11.5px;color:var(--text-3);line-height:1.8;}
+.libido-guide-row strong{color:var(--text-2);font-weight:600;}
+.daily-saved-badge{display:inline-flex;align-items:center;gap:5px;background:var(--primary-dim);border:1px solid var(--primary-border);border-radius:99px;padding:3px 10px;font-size:11px;color:var(--primary);font-weight:600;margin-bottom:.7rem;}
 </style>
 </head>
 <body>
@@ -329,7 +352,7 @@ function loadState() {
       if (r) { const p=JSON.parse(r); if (k!==STORAGE_KEY) saveState(p); return p; }
     }
   } catch(e){}
-  return { startDate:null, baseline:null, logs:{}, checkins:[], foodPrefs:{} };
+  return { startDate:null, baseline:null, logs:{}, checkins:[], foodPrefs:{}, foodLog:{}, dailyLog:{} };
 }
 function saveState(s) { try { localStorage.setItem(STORAGE_KEY,JSON.stringify(s)); } catch(e){} }
 
@@ -652,20 +675,46 @@ function daysSinceLastLog(){
 }
 
 // ── RENDER NUTRICIÓN ──
+function foodKey(name){ return 'obs-'+name.replace(/[^a-zA-Z0-9]/g,'_'); }
+
 function renderNutricion() {
   const prefs = state.foodPrefs || {};
+  const today = todayISO();
+  if (!state.foodLog) state.foodLog={};
+  const todayLog = state.foodLog[today] || {};
   let html='';
 
+  // ── Resumen de lo comido hoy ──
+  const eaten = Object.entries(todayLog).filter(([,v])=>v.eaten);
+  if (eaten.length) {
+    html+=`<div class="eaten-today-card">
+      <div class="overline" style="color:var(--success);margin-bottom:.5rem;">✓ Hoy ingerí</div>
+      ${eaten.map(([name,v])=>{
+        const fd=NO_FOODS.find(x=>x.name===name);
+        return `<div class="eaten-row">
+          <span style="font-size:18px;flex-shrink:0;">${fd?.icon||'🍽'}</span>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;color:var(--text-1);">${name}</div>
+            ${v.notes?`<div class="eaten-note-txt">"${v.notes}"</div>`:'<div class="eaten-note-txt">sin observaciones</div>'}
+          </div>
+          <span class="food-por" style="flex-shrink:0;">${fd?.por||''}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  // ── Catálogo por categoría ──
   NO_CATS.forEach(cat=>{
     const foods=NO_FOODS.filter(f=>f.cat===cat);
     html+=`<div class="no-section">
-      <div class="no-section-title">
-        <span class="ns-label">${cat}</span>
-      </div>
+      <div class="no-section-title"><span class="ns-label">${cat}</span></div>
       <div class="card" style="padding:.4rem 1.1rem;">
         ${foods.map(f=>{
           const noTengo=prefs[f.name]==='no';
-          return `<div class="food-item${noTengo?' ':''}">
+          const isEaten=!!todayLog[f.name]?.eaten;
+          const savedNote=todayLog[f.name]?.notes||'';
+          const ek=foodKey(f.name);
+          return `<div class="food-item">
             <div class="food-icon">${f.icon}</div>
             <div class="food-body">
               <div class="food-name-row">
@@ -675,11 +724,17 @@ function renderNutricion() {
               </div>
               <div class="food-mech">${f.mech}</div>
               <div class="food-note">${f.note}</div>
-              <div style="display:flex;gap:6px;margin-top:7px;">
-                <button class="ghost" style="font-size:11px;padding:3px 8px;border:1px solid var(--border-s);border-radius:99px;${!noTengo?'color:var(--primary);border-color:var(--primary-border);background:var(--primary-dim);':''}"
+              <div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;">
+                <button class="ghost" style="font-size:11px;padding:3px 9px;border:1px solid var(--border-s);border-radius:99px;${!noTengo?'color:var(--primary);border-color:var(--primary-border);background:var(--primary-dim);':''}"
                   data-food="${f.name}" data-action="tengo">✓ Lo tengo</button>
-                <button class="ghost" style="font-size:11px;padding:3px 8px;border:1px solid var(--border-s);border-radius:99px;${noTengo?'color:var(--danger);border-color:var(--danger-border);background:var(--danger-dim);':''}"
+                <button class="ghost" style="font-size:11px;padding:3px 9px;border:1px solid var(--border-s);border-radius:99px;${noTengo?'color:var(--danger);border-color:var(--danger-border);background:var(--danger-dim);':''}"
                   data-food="${f.name}" data-action="no">✗ No tengo</button>
+                <button class="ghost" style="font-size:11px;padding:3px 9px;border:1px solid var(--border-s);border-radius:99px;${isEaten?'color:var(--success);border-color:var(--success-border);background:var(--success-dim);':''}"
+                  data-food="${f.name}" data-action="comi" data-ek="${ek}">🍽 Hoy comí</button>
+              </div>
+              <div class="food-obs-form${isEaten?' open':''}" id="${ek}">
+                <textarea class="obs" id="txt-${ek}" placeholder="Observaciones: porción, cómo lo preparé, sabor, si lo combiné con algo...">${savedNote}</textarea>
+                <button class="obs-save" data-food="${f.name}" data-action="save-obs" data-ek="${ek}">Guardar nota</button>
               </div>
             </div>
           </div>`;
@@ -688,7 +743,7 @@ function renderNutricion() {
     </div>`;
   });
 
-  // Nota suplementación
+  // Suplementación
   const w=currentWeek();
   html+=`<div class="card" style="background:var(--card-el);">
     <div class="overline" style="margin-bottom:.5rem;">Suplementación — Semana ${w}</div>
@@ -697,18 +752,41 @@ function renderNutricion() {
 
   document.getElementById('nutricion-content').innerHTML=html;
 
-  // Events
   document.querySelectorAll('[data-action]').forEach(btn=>{
     btn.addEventListener('click',()=>{
-      const food=btn.getAttribute('data-food'), action=btn.getAttribute('data-action');
+      const food=btn.getAttribute('data-food');
+      const action=btn.getAttribute('data-action');
+      const ek=btn.getAttribute('data-ek');
       if (!state.foodPrefs) state.foodPrefs={};
-      if (action==='no') {
-        state.foodPrefs[food] = state.foodPrefs[food]==='no' ? null : 'no'; // toggle
-      } else {
+      if (!state.foodLog) state.foodLog={};
+      if (!state.foodLog[today]) state.foodLog[today]={};
+
+      if (action==='tengo') {
         delete state.foodPrefs[food];
+        saveState(state); renderNutricion();
+      } else if (action==='no') {
+        state.foodPrefs[food]=state.foodPrefs[food]==='no'?null:'no';
+        saveState(state); renderNutricion();
+      } else if (action==='comi') {
+        if (state.foodLog[today][food]?.eaten) {
+          // toggle off
+          delete state.foodLog[today][food];
+          saveState(state); renderNutricion();
+        } else {
+          state.foodLog[today][food]={eaten:true,notes:''};
+          saveState(state);
+          const form=document.getElementById(ek);
+          if (form){form.classList.add('open');form.querySelector('textarea')?.focus();}
+          btn.style.cssText='font-size:11px;padding:3px 9px;border:1px solid var(--success-border);border-radius:99px;color:var(--success);background:var(--success-dim);';
+        }
+      } else if (action==='save-obs') {
+        const txt=document.getElementById('txt-'+ek)?.value.trim()||'';
+        if (!state.foodLog[today][food]) state.foodLog[today][food]={eaten:true};
+        state.foodLog[today][food].notes=txt;
+        saveState(state);
+        showToast('Nota guardada ✓');
+        renderNutricion();
       }
-      saveState(state);
-      renderNutricion();
     });
   });
 }
@@ -723,54 +801,119 @@ function suppNote(w) {
 // ── RENDER PROGRESO ──
 function renderProgreso() {
   const w=currentWeek();
+  const today=todayISO();
   const last=state.checkins[state.checkins.length-1];
   const alreadyDone=last&&last.week>=w;
+  if (!state.dailyLog) state.dailyLog={};
+  const dl=state.dailyLog[today]||{};
+  const dlSaved=!!dl.saved;
 
   let html='';
 
+  // ── Gráfico evolución ──
   if (state.checkins.length>1) {
     html+=`<div class="card">
       <h3 style="margin-bottom:.9rem;">Evolución</h3>
-      <div style="position:relative;height:200px;">
-        <canvas id="progressChart"></canvas>
-      </div>
+      <div style="position:relative;height:200px;"><canvas id="progressChart"></canvas></div>
     </div>`;
   }
 
+  // ── REGISTRO DEL DÍA ──
+  html+=`<div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem;">
+      <h3>Registro del día</h3>
+      ${dlSaved?`<span class="daily-saved-badge">✓ Guardado hoy</span>`:''}
+    </div>
+    <p class="micro" style="margin-bottom:.9rem;">Anotar cada día te permite ver patrones que la evaluación semanal no captura.</p>
+
+    <div style="margin-bottom:.9rem;">
+      <div class="section-label">Kegel sostenido — ¿cuántos segundos hoy?</div>
+      <div class="range-row">
+        <input type="range" id="dl-kegel" min="1" max="30" step="1" value="${dl.kegelSec||5}">
+        <span id="dl-kegel-out" class="range-val">${dl.kegelSec||5}s</span>
+      </div>
+      <p class="micro" style="margin-top:3px;">Mejor serie del día. Si hiciste varias, anota la que más aguantaste.</p>
+    </div>
+
+    <div class="section-div"></div>
+    <div style="margin-bottom:.9rem;">
+      <div class="section-label">Flicks — ¿cuántas repeticiones rápidas?</div>
+      <div class="num-input-row">
+        <input type="number" class="num-input" id="dl-flicks" min="0" max="100" value="${dl.flicks??0}">
+        <span class="micro">rep totales (suma todas las series)</span>
+      </div>
+    </div>
+
+    <div class="section-div"></div>
+    <div style="margin-bottom:.9rem;">
+      <div class="section-label">¿Erección matutina hoy?</div>
+      <div class="yn-row">
+        <button class="yn-btn${dl.morning===true?' sel-yes':''}" id="dl-morning-yes" data-dl-morning="yes">✓ Sí</button>
+        <button class="yn-btn${dl.morning===false?' sel-no':''}" id="dl-morning-no" data-dl-morning="no">✗ No</button>
+      </div>
+      <p class="micro">Las erecciones nocturnas/matutinas son el mejor indicador de salud vascular. Un "sí" es buena señal aunque no la recuerdes completa.</p>
+    </div>
+
+    <div class="section-div"></div>
+    <div style="margin-bottom:.9rem;">
+      <div class="section-label">Libido hoy (1–10)</div>
+      <div class="range-row">
+        <input type="range" id="dl-libido" min="1" max="10" step="1" value="${dl.libido||5}">
+        <span id="dl-libido-out" class="range-val sc">${dl.libido||5}</span>
+      </div>
+      <div class="libido-guide">
+        <div class="libido-guide-row"><strong>1–2:</strong> Sin deseo. Nada surge espontáneamente, sin respuesta a estímulos.</div>
+        <div class="libido-guide-row"><strong>3–4:</strong> Bajo. Solo aparece con estímulo directo, no por sí solo.</div>
+        <div class="libido-guide-row"><strong>5–6:</strong> Normal. Surge espontáneamente en algún momento del día.</div>
+        <div class="libido-guide-row"><strong>7–8:</strong> Bueno. Pensamientos frecuentes, respuesta rápida, motivación activa.</div>
+        <div class="libido-guide-row"><strong>9–10:</strong> Alto. Deseo persistente, energía sexual elevada y difícil de ignorar.</div>
+      </div>
+    </div>
+
+    <div class="section-div"></div>
+    <div style="margin-bottom:1rem;">
+      <div class="section-label">Observaciones del día</div>
+      <textarea class="obs" id="dl-notes" style="margin-top:5px;" placeholder="Ej: dormí mal, mucho estrés en el trabajo, noté más firmeza al despertar, el kegel se sintió más fácil que ayer...">${dl.notes||''}</textarea>
+    </div>
+
+    <button class="primary" id="btn-save-daily" style="width:100%;padding:13px;">${dlSaved?'Actualizar registro de hoy':'Guardar registro de hoy'}</button>
+  </div>`;
+
+  // ── EVALUACIÓN SEMANAL ──
   if (alreadyDone) {
-    html+=`<div class="micro" style="text-align:center;padding:.5rem 0;">Evaluación sem. ${w} registrada ✓ — vuelve la próxima semana.</div>`;
+    html+=`<div class="micro" style="text-align:center;padding:.5rem 0;color:var(--success);">Evaluación sem. ${w} registrada ✓ — vuelve la próxima semana.</div>`;
   } else {
     html+=`<div class="card">
       <h3 style="margin-bottom:.3rem;">Evaluación — Semana ${w}</h3>
-      <p class="micro" style="margin-bottom:1rem;">Cuatro métricas en menos de 2 minutos.</p>
+      <p class="micro" style="margin-bottom:1rem;">Resumen semanal para ver tu evolución en el gráfico.</p>
 
       <div style="margin-bottom:.9rem;">
         <div class="section-label">1. Firmeza de erección (EHS 1–4)</div>
         <div class="ehs-grid">${[1,2,3,4].map(v=>`<button class="ehs-btn" data-v="${v}">${v}</button>`).join('')}</div>
-        <div class="ehs-desc" id="ehs-desc">Selecciona tu nivel actual</div>
+        <div class="ehs-desc" id="ehs-desc">1 = crece sin endurecer · 2 = duro pero no suficiente · 3 = suficiente · 4 = completamente rígido</div>
       </div>
       <div class="section-div"></div>
       <div style="margin-bottom:.9rem;">
-        <div class="section-label">2. Segundos máximos de Kegel sostenido</div>
+        <div class="section-label">2. Máximo Kegel sostenido esta semana</div>
         <div class="range-row">
-          <input type="range" id="kegel-range" min="2" max="20" step="1" value="${state.baseline?.kegelSec||5}">
-          <span id="kegel-out" class="range-val">${state.baseline?.kegelSec||5}s</span>
+          <input type="range" id="kegel-range" min="2" max="30" step="1" value="${dl.kegelSec||state.baseline?.kegelSec||5}">
+          <span id="kegel-out" class="range-val">${dl.kegelSec||state.baseline?.kegelSec||5}s</span>
         </div>
       </div>
       <div class="section-div"></div>
       <div style="margin-bottom:.9rem;">
         <div class="section-label">3. Erecciones matutinas esta semana (0–7)</div>
         <div class="morning-grid">${[0,1,2,3,4,5,6,7].map(n=>`<button class="me-btn" data-me="${n}">${n}</button>`).join('')}</div>
-        <div class="ehs-desc" id="me-desc">Meta: 5-7 / semana — indicador vascular</div>
+        <div class="ehs-desc" id="me-desc">Meta: 5-7 / semana — indicador vascular clave</div>
       </div>
       <div class="section-div"></div>
       <div style="margin-bottom:1.1rem;">
-        <div class="section-label">4. Libido / energía general (1–10)</div>
+        <div class="section-label">4. Libido promedio de la semana (1–10)</div>
         <div class="range-row">
-          <input type="range" id="libido-range" min="1" max="10" step="1" value="5">
-          <span id="libido-out" class="range-val sc">5</span>
+          <input type="range" id="libido-range" min="1" max="10" step="1" value="${dl.libido||5}">
+          <span id="libido-out" class="range-val sc">${dl.libido||5}</span>
         </div>
-        <div class="libido-labels"><span>Baja</span><span>Normal</span><span>Alta</span></div>
+        <div class="libido-labels"><span>1 – Sin deseo</span><span>5 – Normal</span><span>10 – Alto</span></div>
       </div>
       <button class="primary" id="btn-save-checkin" style="width:100%;padding:13px;">Guardar evaluación semana ${w}</button>
     </div>`;
@@ -779,7 +922,34 @@ function renderProgreso() {
   document.getElementById('progreso-content').innerHTML=html;
   if (state.checkins.length>1) setTimeout(renderChart,0);
 
-  // Events
+  // ── Daily log events ──
+  const dlK=document.getElementById('dl-kegel');
+  if(dlK){dlK.addEventListener('input',()=>document.getElementById('dl-kegel-out').textContent=dlK.value+'s');}
+  const dlL=document.getElementById('dl-libido');
+  if(dlL){dlL.addEventListener('input',()=>document.getElementById('dl-libido-out').textContent=dlL.value);}
+  let dlMorning = dl.morning??null;
+  document.querySelectorAll('[data-dl-morning]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const val=b.getAttribute('data-dl-morning')==='yes';
+      dlMorning=dlMorning===val?null:val;
+      document.getElementById('dl-morning-yes').className='yn-btn'+(dlMorning===true?' sel-yes':'');
+      document.getElementById('dl-morning-no').className='yn-btn'+(dlMorning===false?' sel-no':'');
+    });
+  });
+  document.getElementById('btn-save-daily')?.addEventListener('click',()=>{
+    if (!state.dailyLog) state.dailyLog={};
+    state.dailyLog[today]={
+      saved:true,
+      kegelSec:parseInt(document.getElementById('dl-kegel').value),
+      flicks:parseInt(document.getElementById('dl-flicks').value)||0,
+      morning:dlMorning,
+      libido:parseInt(document.getElementById('dl-libido').value),
+      notes:document.getElementById('dl-notes').value.trim()
+    };
+    saveState(state); showToast('Registro del día guardado ✓'); renderProgreso();
+  });
+
+  // ── Weekly checkin events ──
   selectedEhs=null; selectedMorning=null;
   document.querySelectorAll('.ehs-btn').forEach(b=>{
     b.addEventListener('click',()=>{
@@ -801,14 +971,13 @@ function renderProgreso() {
   if(kR){const kO=document.getElementById('kegel-out');kR.addEventListener('input',()=>kO.textContent=kR.value+'s');}
   const lR=document.getElementById('libido-range');
   if(lR){const lO=document.getElementById('libido-out');lR.addEventListener('input',()=>lO.textContent=lR.value);}
-  const sb=document.getElementById('btn-save-checkin');
-  if(sb) sb.addEventListener('click',()=>{
+  document.getElementById('btn-save-checkin')?.addEventListener('click',()=>{
     if(selectedEhs===null){showToast('Selecciona tu nivel EHS primero');return;}
     if(selectedMorning===null){showToast('Selecciona las erecciones matutinas');return;}
     const last2=state.checkins[state.checkins.length-1];
-    if(last2&&last2.date===todayISO()&&last2.week===w){showToast('Ya guardaste la evaluación de hoy');return;}
-    state.checkins.push({week:w,ehs:selectedEhs,kegelSec:parseInt(document.getElementById('kegel-range').value),morningErections:selectedMorning,libido:parseInt(document.getElementById('libido-range').value),date:todayISO()});
-    saveState(state); showToast('Evaluación guardada'); renderProgreso();
+    if(last2&&last2.date===today&&last2.week===w){showToast('Ya guardaste la evaluación de hoy');return;}
+    state.checkins.push({week:w,ehs:selectedEhs,kegelSec:parseInt(document.getElementById('kegel-range').value),morningErections:selectedMorning,libido:parseInt(document.getElementById('libido-range').value),date:today});
+    saveState(state); showToast('Evaluación semanal guardada ✓'); renderProgreso();
   });
 }
 
