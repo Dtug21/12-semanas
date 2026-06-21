@@ -811,6 +811,16 @@ function scheduleNotifications() {
     doneBlocks===1?'Una sesión completa. Termina con la rutina de noche.':
     'Aún estás a tiempo — 10 minutos para la rutina nocturna.');
 
+  // Notificación de alimentos si no hay nada registrado hoy
+  const todayFood = state.foodLog?.[today] || {};
+  const hasEaten = Object.values(todayFood).some(v=>v.eaten);
+  if (!hasEaten) {
+    setSlot(14,30,'food','🥗 Alimentos del día',
+      'No has registrado ningún alimento hoy. Recuerda incluir algo con nitratos o citrulina.');
+    setSlot(20,0,'food-eve','🥗 ¿Comiste algo para el NO?',
+      'Aún no registraste alimentos hoy — remolacha, rúcula, sandía o nueces marcan la diferencia.');
+  }
+
   if (navigator.serviceWorker?.controller) {
     navigator.serviceWorker.controller.postMessage({type:'SCHEDULE',slots});
   } else if (swReg?.active) {
@@ -831,12 +841,16 @@ function showInAppBanner() {
   const ePct=blockPct(session.evening,'Noche');
   const h=new Date().getHours();
   let icon='', msg='';
-  if (mPct===100&&mdPct===100&&ePct===100){icon='🏆';msg='¡Día completo! Las 3 sesiones terminadas.';}
+  const todayFood = state.foodLog?.[today] || {};
+  const hasEaten = Object.values(todayFood).some(v=>v.eaten);
+  if (mPct===100&&mdPct===100&&ePct===100&&hasEaten){icon='🏆';msg='¡Día completo! 3 sesiones ✓ y alimentos registrados.';}
+  else if (mPct===100&&mdPct===100&&ePct===100){icon='🏆';msg='¡3 sesiones completas! No olvides registrar tus alimentos.';}
   else if (mPct===100&&mdPct===100){icon='🔥';msg='Mañana ✓ Mediodía ✓ — falta la rutina nocturna.';}
   else if (mPct===100&&h>=12){icon='⚡';msg='Mañana ✓ — ¿ya hiciste el mediodía?';}
   else if (mPct<100&&h>=9&&h<12){icon='🌅';msg='No has empezado la rutina matutina todavía.';}
   else if (mPct<100&&h>=12&&h<21){icon='⚠';msg='Mañana pendiente — puedes hacerla ahora junto al mediodía.';}
   else if (h>=21&&ePct<100){icon='🌙';msg='Queda la rutina nocturna antes de dormir.';}
+  if (!msg&&!hasEaten&&h>=12){icon='🥗';msg='No has registrado alimentos hoy — ve a Nutrición y toca "Hoy comí".';}
   if (!msg) return;
   const banner=document.getElementById('notif-banner');
   if (banner){
