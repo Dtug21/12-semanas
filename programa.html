@@ -195,6 +195,52 @@ label.check-item:hover .chk-box{border-color:var(--primary);}
 .star.on{color:var(--primary);}
 .star.off{color:var(--border-s);}
 
+/* ── NUTRICIÓN GUÍA (ficha V2) ── */
+.nutri-intro{font-size:12px;color:var(--text-2);line-height:1.65;margin-bottom:.9rem;}
+.nutri-phase-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:10.5px;font-weight:600;letter-spacing:.3px;margin-bottom:.55rem;}
+.nutri-phase-pill.p1{background:var(--primary-dim);color:var(--primary);border:1px solid var(--primary-border);}
+.nutri-phase-pill.p2{background:var(--success-dim);color:var(--success);border:1px solid var(--success-border);}
+.nutri-phase-pill.p3{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(77,142,255,.2);}
+.nutri-phase-pill.p4{background:var(--warning-dim);color:var(--warning);border:1px solid rgba(251,169,76,.2);}
+.nutri-row{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.nutri-row:last-child{border-bottom:none;}
+.nutri-row-icon{font-size:20px;flex-shrink:0;width:28px;text-align:center;}
+.nutri-row-body{flex:1;min-width:0;}
+.nutri-row-name{font-size:13px;font-weight:600;color:var(--text-1);margin-bottom:2px;}
+.nutri-row-por{font-size:10.5px;color:var(--primary);font-weight:600;margin-bottom:2px;}
+.nutri-row-comp{font-size:11px;color:var(--success);font-weight:500;margin-bottom:2px;}
+.nutri-row-note{font-size:11px;color:var(--text-3);line-height:1.5;}
+.nutri-callout{background:var(--card-el);border:1px solid var(--border);border-radius:var(--r-md);padding:.75rem .9rem;margin-bottom:.8rem;font-size:11.5px;color:var(--text-2);line-height:1.65;}
+.nutri-callout.warn{border-color:var(--warning);background:var(--warning-dim);}
+.nutri-callout.tip{border-color:var(--primary-border);background:var(--primary-dim);}
+.nutri-callout strong{color:var(--text-1);font-weight:600;}
+.nutri-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;margin-bottom:6px;}
+.nutri-tag.sin{background:var(--success-dim);color:var(--success);border:1px solid var(--success-border);}
+.nutri-tag.ant{background:var(--danger-dim);color:var(--danger);border:1px solid var(--danger-border);}
+.nutri-cross-title{font-size:13.5px;font-weight:600;color:var(--text-1);margin-bottom:4px;}
+.nutri-cross-sub{font-size:11px;color:var(--text-3);line-height:1.55;margin-bottom:6px;}
+.nutri-kv{display:grid;grid-template-columns:88px 1fr;gap:4px 10px;font-size:11px;margin-top:6px;}
+.nutri-kv dt{color:var(--text-3);}
+.nutri-kv dd{color:var(--text-2);line-height:1.45;}
+.nutri-ant-table{width:100%;font-size:11px;border-collapse:collapse;}
+.nutri-ant-table th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-3);padding:6px 4px;border-bottom:1px solid var(--border);}
+.nutri-ant-table td{padding:8px 4px;border-bottom:1px solid var(--border);color:var(--text-2);line-height:1.45;vertical-align:top;}
+.nutri-ant-table td:first-child{font-weight:600;color:var(--text-1);min-width:72px;}
+.nutri-ant-table tr:last-child td{border-bottom:none;}
+.nutri-seq-week{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.nutri-seq-week:last-child{border-bottom:none;}
+.nutri-seq-num{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--primary-dim);border:1px solid var(--primary-border);color:var(--primary);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.nutri-seq-body{flex:1;}
+.nutri-seq-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:3px;}
+.nutri-seq-intro{font-size:12.5px;color:var(--text-1);font-weight:500;line-height:1.45;margin-bottom:3px;}
+.nutri-seq-avoid{font-size:11px;color:var(--warning);line-height:1.45;}
+.nutri-supp-ev{font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px;display:inline-block;margin-bottom:5px;}
+.nutri-supp-ev.mod{background:var(--warning-dim);color:var(--warning);border:1px solid rgba(251,169,76,.25);}
+.nutri-supp-ev.high{background:var(--success-dim);color:var(--success);border:1px solid var(--success-border);}
+.nutri-disclaimer{font-size:10px;color:var(--text-3);line-height:1.6;padding:.8rem;border:1px solid var(--border);border-radius:var(--r-md);margin-top:.5rem;}
+.sub-tabs.scroll-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;}
+.sub-tabs.scroll-tabs .sub-tab{flex:0 0 auto;min-width:max-content;padding:8px 12px;white-space:nowrap;}
+
 /* ── PROGRESO TAB ── */
 .ehs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:5px;}
 .ehs-btn{padding:10px 4px;font-size:16px;font-weight:600;border-radius:var(--r-sm);text-align:center;background:var(--card-el);border:1.5px solid var(--border-s);color:var(--text-2);transition:all .12s;font-family:inherit;cursor:pointer;}
@@ -542,6 +588,197 @@ const NO_FOODS = [
 
 const NO_CATS = [...new Set(NO_FOODS.map(f=>f.cat))];
 
+// ── FICHA NUTRICIÓN V2 (alimentos por fase, cruces, protocolo) ──
+const NUTRI_PHASES = [
+  { phase:'Semana 1', cls:'p1', title:'Base de óxido nítrico (nitratos)', note:'El NO es la molécula central de la erección vascular. Efecto inmediato y acumulativo con consumo diario.',
+    items:[
+      {icon:'🫐',name:'Remolacha',por:'1-2 medianas o 250 ml jugo',comp:'Nitratos inorgánicos'},
+      {icon:'🥬',name:'Rúcula',por:'1-2 tazas crudas',comp:'Mayor concentración de nitrato por gramo'},
+      {icon:'🥬',name:'Espinaca',por:'1-2 tazas (cruda o cocción breve)',comp:'Nitratos'},
+      {icon:'🥬',name:'Kale',por:'1 taza',comp:'Nitratos + omega-3 vegetal'},
+    ]},
+  { phase:'Semana 1-2', cls:'p2', title:'Precursores de arginina (vía dietaria)', note:'Arginina dietaria como sustrato para la síntesis de óxido nítrico.',
+    items:[
+      {icon:'🌰',name:'Nueces (walnuts)',por:'30-60 g (un puñado)',comp:'Arginina + vitamina E + omega-3'},
+      {icon:'🍗',name:'Pollo, pavo, carnes magras',por:'150-200 g',comp:'L-arginina dietaria'},
+      {icon:'🐟',name:'Pescado (cualquier tipo)',por:'150 g, 3-4×/semana',comp:'L-arginina + omega-3'},
+      {icon:'🥛',name:'Lácteos (yogurt, queso)',por:'1-2 porciones',comp:'L-arginina'},
+    ]},
+  { phase:'Semana 2', cls:'p3', title:'Flavonoides y protección vascular', note:'Antocianinas y flavonoles asociados a mejor función endotelial.',
+    items:[
+      {icon:'🫐',name:'Arándanos, fresas, moras',por:'1 taza, 4-5×/semana',comp:'Antocianinas — asociadas a −9-11% riesgo DE'},
+      {icon:'🍊',name:'Cítricos (naranja entera)',por:'1-2 unidades/día',comp:'Hesperidina — mejora función endotelial y eréctil'},
+      {icon:'🍎',name:'Manzana, pera',por:'1 unidad/día',comp:'Quercetina y flavonoles'},
+      {icon:'🍫',name:'Chocolate negro >70%',por:'20-30 g/día',comp:'Epicatequinas'},
+      {icon:'🫐',name:'Granada (fruta o jugo natural)',por:'1 unidad o 200 ml, 3-4×/semana',comp:'Punicalagina — antioxidante endotelial'},
+    ]},
+  { phase:'Semana 2', cls:'p4', title:'Compuestos de apoyo adicional', note:'Complementos que potencian la vía vascular y hormonal de forma dietaria.',
+    items:[
+      {icon:'🧄',name:'Ajo crudo o ligeramente cocido',por:'1-2 dientes',comp:'Alicina — estimula producción de NO'},
+      {icon:'🌶',name:'Ajíes picantes (cayena, jalapeño)',por:'Al gusto, con las comidas',comp:'Capsaicina — vasodilatación periférica'},
+      {icon:'🫒',name:'Aceite de oliva extra virgen',por:'2-3 cucharadas/día',comp:'Grasas monoinsaturadas — apoyo a testosterona'},
+      {icon:'🦪',name:'Ostras',por:'6 unidades, 1-2×/semana',comp:'Zinc en dosis alta concentrada'},
+      {icon:'☕',name:'Café',por:'Hasta 2 tazas/día',comp:'Antioxidante en consumo moderado — ver timing en Cruces'},
+    ]},
+];
+
+const NUTRI_SUPPS = [
+  { name:'Azafrán (Crocus sativus)', ev:'high', evLabel:'Evidencia moderada-alta',
+    summary:'Uno de los compuestos con evidencia más consistente. Mecanismo antioxidante, modulación hormonal y posible acción central sobre neurotransmisores del deseo.',
+    fields:[['Dosis estudiada','15 mg × 2/día (30 mg total) × 4 sem., o 200 mg/día × 10 días'],['Resultado','IIEF-15: 22.15 → 39.20 (p<0.001) en 10 días; mejora en rigidez y tumescencia'],['Metaanálisis','+5.36 pts función eréctil, +2.18 satisfacción coito, +0.78 deseo (p<0.01)'],['Nota práctica','Extracto estandarizado — la crocina varía mucho en hebras de cocina'],['Precaución','Tóxico en dosis muy altas (>5 g), muy por encima de la terapéutica']]},
+  { name:'Fenogreco (Trigonella foenum-graecum)', ev:'mod', evLabel:'Evidencia moderada',
+    summary:'Mejora parámetros subjetivos de función sexual sin alterar testosterona ni prolactina — posible mecanismo vía energía y bienestar general.',
+    fields:[['Dosis estudiada','600 mg/día × 6 semanas'],['Resultado','↑ excitación sexual y orgasmo (escala Derogatis); ↑ fuerza, energía y bienestar'],['Dato clave','Testosterona y prolactina se mantuvieron normales'],['Precaución','Puede potenciar hipoglicemiantes — vigilar en diabetes/prediabetes']]},
+  { name:'Tongkat Ali (Eurycoma longifolia)', ev:'mod', evLabel:'Evidencia moderada',
+    summary:'Respaldo sólido en ECA recientes, especialmente combinado con entrenamiento físico concurrente.',
+    fields:[['Dosis estudiada','200 mg/día × 12 sem. (algunos protocolos a 6 meses)'],['Resultado 6 meses','↑ función eréctil (IIEF-5) y testosterona en ADAM; mejor con ejercicio 3×/sem. × 60 min'],['Hipogonadismo','76/320 pacientes con ↑ significativa de testosterona tras 1 mes'],['Precaución calidad','Extractos certificados (ej. Physta®) — eurycomanona varía mucho entre marcas']]},
+];
+
+const NUTRI_AVOID = [
+  { name:'Horny Goat Weed (Epimedium)', why:'Generalmente seguro, pero sin evidencia en humanos de beneficio real — solo estudios en animales.'},
+  { name:'Ginkgo Biloba', why:'Sin datos convincentes en DE; puede causar cefalea, convulsiones y sangrado, especialmente con anticoagulantes.'},
+  { name:'Yohimbina', why:'Resultados contradictorios (posible placebo); puede causar hipertensión, ansiedad, insomnio y sudoración.'},
+  { name:'Productos sin marca certificada', why:'81% de muestras en EE.UU./Asia contenían inhibidores PDE5 no declarados (mismo principio que Viagra) — ilegal y peligroso sin supervisión médica, especialmente con nitratos.'},
+];
+
+const NUTRI_SYNERGIES = [
+  { title:'Citrulina + Arginina + Pycnogenol', tag:'Sinergia documentada — fórmula "Prelox"',
+    why:'Pycnogenol activa eNOS; arginina y citrulina son el sustrato. Activar la enzima sin sustrato, o viceversa, produce menos efecto.',
+    detail:'Dosis estudiada: L-arginina 1.7-3 g/día + Pycnogenol 40-120 mg/día. Algunos protocolos: 80 mg Pycnogenol + 1.92 g arginina + 1.2 g citrulina + 40 mg extracto de roble francés.',
+    result:'Mejora IIEF de 3-6 puntos en ~3 meses, sin efectos secundarios significativos. La citrulina eleva arginina plasmática más que arginina sola.'},
+  { title:'L-Arginina / Citrulina + inhibidores PDE5', tag:'Sinergia — solo con indicación médica',
+    why:'Actúan en puntos distintos de la misma vía: arginina aporta sustrato, el inhibidor PDE5 prolonga la señal de NO ya generada.',
+    detail:'Si usas tadalafil o sildenafil con indicación médica, añadir arginina/citrulina puede sumar beneficio adicional pequeño pero consistente.',
+    result:''},
+  { title:'Vitamina C + antioxidantes vegetales', tag:'Sinergia biodisponibilidad',
+    why:'La vitamina C regenera vitamina E activa tras neutralizar radicales libres y potencia antioxidantes vegetales.',
+    detail:'Tomar cítricos (vitamina C) en la misma comida que ginseng, pycnogenol o azafrán mejora el efecto antioxidante conjunto.',
+    result:''},
+];
+
+const NUTRI_ANTAGONISMS = [
+  { combo:'Café + suplementos NO', effect:'La cafeína aguda puede aumentar rigidez arterial y presión aórtica — va en sentido contrario al vasodilatador de citrulina/arginina.', avoid:'Separar 2-3 h: café por la mañana, suplemento más tarde o antes del entrenamiento.'},
+  { combo:'Zinc alto + cobre', effect:'Zinc >40 mg/día sostenido bloquea absorción de cobre a largo plazo.', avoid:'No superar 30 mg/día de zinc sin supervisión; si dosis alta prolongada, considerar cobre 1-2 mg/día aparte.'},
+  { combo:'Calcio + hierro o zinc', effect:'Calcio en dosis altas inhibe absorción de hierro y zinc por competencia intestinal.', avoid:'Si tomas zinc, evita junto con comida muy rica en lácteos o suplemento de calcio; separar 2 h.'},
+  { combo:'Fitatos + zinc dietario', effect:'Fitatos en legumbres/cereales integrales crudos forman sales insolubles con zinc, hierro y magnesio.', avoid:'Remojar o germinar legumbres/granos reduce fitatos; no afecta zinc de fuentes animales (ostras, carne).'},
+  { combo:'Alcohol + citrulina/arginina/remolacha', effect:'Ambos relajan vasos; combinados pueden bajar presión más de lo esperado (mareo, especialmente con PA baja).', avoid:'Evitar suplemento NO el mismo día con alcohol relevante, o separar varias horas.'},
+  { combo:'Pomelo + hierbas CYP3A4', effect:'El pomelo inhibe enzima hepática que metaboliza muchos compuestos — puede elevar concentración en sangre.', avoid:'Evitar pomelo o jugo cerca de ginseng, tongkat ali u otros extractos herbales concentrados.'},
+  { combo:'Fibra/proteína exceso + aminoácidos', effect:'Fibra y proteína en exceso pueden unirse a minerales y aminoácidos libres, reduciendo absorción puntual.', avoid:'Tomar arginina/citrulina con estómago relativamente vacío o comida ligera, no tras comida copiosa rica en fibra.'},
+];
+
+const NUTRI_SEQUENCE = [
+  { weeks:'1', intro:'Alimentos ricos en nitratos (remolacha, rúcula, espinaca) + carnes/pescado con arginina dietaria', avoid:'Nada que evitar aún — solo comida real'},
+  { weeks:'2', intro:'Se suman flavonoides (bayas, cítricos, chocolate >70%) + ajo + aceite de oliva', avoid:'Separar café de comidas ricas en hierro vegetal si te preocupa absorción de hierro'},
+  { weeks:'3-4', intro:'Primer suplemento: L-Citrulina 1.5 g/día (750 mg + 750 mg)', avoid:'No junto con café; no el mismo día con alcohol en cantidad relevante'},
+  { weeks:'5-6', intro:'Si hay buena tolerancia: Pycnogenol 60-120 mg/día junto a citrulina (sinergia documentada)', avoid:'Mismo cuidado con café/alcohol que fase anterior'},
+  { weeks:'7-8', intro:'Evaluar Panax Ginseng 900 mg × 2-3/día como alternativa (no junto a citrulina+pycnogenol para no mezclar variables)', avoid:'Evitar pomelo cerca de la toma; vigilar si usas anticoagulantes'},
+  { weeks:'9-10', intro:'Opcional: Azafrán 15 mg × 2/día o Tongkat Ali 200 mg/día (elegir uno, no ambos)', avoid:'Tongkat: evitar pomelo. Azafrán: no exceder dosis'},
+  { weeks:'11-12', intro:'Mantener la combinación que mejor resultado haya dado; considerar Fenogreco 600 mg/día si buscas más energía/libido', avoid:'Vigilar glicemia si hay antecedente de diabetes (fenogreco potencia hipoglicemiantes)'},
+];
+
+function renderNutriPhaseRow(item) {
+  return `<div class="nutri-row">
+    <div class="nutri-row-icon">${item.icon}</div>
+    <div class="nutri-row-body">
+      <div class="nutri-row-name">${item.name}</div>
+      <div class="nutri-row-por">${item.por}</div>
+      <div class="nutri-row-comp">${item.comp}</div>
+    </div>
+  </div>`;
+}
+
+function renderNutriFases() {
+  let html = `<div class="nutri-intro">Antes de suplementar, se recomiendan <strong style="color:var(--text-1);">2-3 semanas de ajuste alimentario puro</strong> para establecer línea base y reducir el riesgo de atribuir efectos al compuesto equivocado.</div>
+  <div class="nutri-callout tip"><strong>¿Por qué este orden?</strong> Empezar por nitratos (efecto vascular inmediato) y sumar flavonoides y arginina dietaria da una base sólida de 2 semanas antes de suplementos concentrados, cuando aparecen las interacciones más relevantes.</div>`;
+  NUTRI_PHASES.forEach(ph => {
+    html += `<div class="no-section">
+      <span class="nutri-phase-pill ${ph.cls}">${ph.phase}</span>
+      <div class="card" style="padding:.5rem 1.1rem .6rem;">
+        <h3 style="margin-bottom:4px;">${ph.title}</h3>
+        <div class="micro" style="margin-bottom:.6rem;">${ph.note}</div>
+        ${ph.items.map(renderNutriPhaseRow).join('')}
+      </div>
+    </div>`;
+  });
+  return html;
+}
+
+function renderNutriCruces() {
+  let html = `<div class="nutri-intro">Qué combinaciones se potencian mutuamente y cuáles reducen el efecto esperado — según mecanismos de absorción y evidencia de combinación directa.</div>`;
+  html += `<div class="overline" style="margin-bottom:.5rem;">Sinergias comprobadas</div>`;
+  NUTRI_SYNERGIES.forEach(s => {
+    html += `<div class="card" style="margin-bottom:.7rem;">
+      <span class="nutri-tag sin">✓ ${s.tag}</span>
+      <div class="nutri-cross-title">${s.title}</div>
+      <div class="nutri-cross-sub">${s.why}</div>
+      <div class="micro" style="line-height:1.6;">${s.detail}</div>
+      ${s.result?`<div class="micro" style="margin-top:5px;color:var(--success);">${s.result}</div>`:''}
+    </div>`;
+  });
+  html += `<div class="overline" style="margin:.4rem 0 .5rem;">Antagonismos — cuándo un compuesto reduce el efecto de otro</div>`;
+  html += `<div class="card" style="padding:.6rem .8rem;">
+    <table class="nutri-ant-table">
+      <thead><tr><th>Combinación</th><th>Qué pasa</th><th>Cómo evitarlo</th></tr></thead>
+      <tbody>${NUTRI_ANTAGONISMS.map(a=>`<tr>
+        <td>${a.combo}</td><td>${a.effect}</td><td style="color:var(--primary);">${a.avoid}</td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div>`;
+  html += `<div class="nutri-callout warn" style="margin-top:.8rem;">
+    <strong>Antagonismo más relevante si tomas L-Citrulina o L-Arginina:</strong> evita tomarlo en la misma hora que café o té. No es peligroso, pero reduce el efecto vasodilatador. Opción simple: café al despertar, citrulina 1-2 h después o con el almuerzo.
+  </div>`;
+  return html;
+}
+
+function isCurrentSeqWeek(w, weeks) {
+  if (weeks.includes('-')) {
+    const [a, b] = weeks.split('-').map(Number);
+    return w >= a && w <= b;
+  }
+  return w === parseInt(weeks, 10);
+}
+
+function renderNutriProtocolo() {
+  const w = currentWeek();
+  let html = `<div class="nutri-intro">Progresión sugerida que evita introducir demasiadas variables a la vez y minimiza los antagonismos. <strong style="color:var(--text-1);">Semana actual: ${w}</strong></div>`;
+  html += `<div class="card" style="padding:.5rem 1.1rem;">`;
+  NUTRI_SEQUENCE.forEach(s => {
+    const active = isCurrentSeqWeek(w, s.weeks);
+    html += `<div class="nutri-seq-week"${active?' style="background:var(--primary-dim);margin:0 -1.1rem;padding-left:1.1rem;padding-right:1.1rem;border-radius:var(--r-sm);"':''}>
+      <div class="nutri-seq-num">${s.weeks}</div>
+      <div class="nutri-seq-body">
+        <div class="nutri-seq-label">Semana${s.weeks.includes('-')?'s':''} ${s.weeks}</div>
+        <div class="nutri-seq-intro">${s.intro}</div>
+        <div class="nutri-seq-avoid">⚠ ${s.avoid}</div>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  html += `<div class="nutri-callout tip"><strong>Principio de una variable a la vez:</strong> en semanas 7-10 no combines Ginseng con Azafrán o Tongkat Ali simultáneamente. No son antagonistas — pero si tomas tres compuestos nuevos a la vez no podrás identificar cuál da resultado o efecto adverso. Cambia de a uno, evalúa 3-4 semanas, decide si mantener o rotar.</div>`;
+  html += `<div class="overline" style="margin:.9rem 0 .5rem;">Suplementos nuevos con evidencia (V2)</div>`;
+  NUTRI_SUPPS.forEach(s => {
+    html += `<div class="card" style="margin-bottom:.7rem;">
+      <span class="nutri-supp-ev ${s.ev}">${s.evLabel}</span>
+      <div class="nutri-cross-title">${s.name}</div>
+      <div class="nutri-cross-sub" style="margin-bottom:8px;">${s.summary}</div>
+      <dl class="nutri-kv">${s.fields.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+    </div>`;
+  });
+  html += `<div class="overline" style="margin:.4rem 0 .5rem;">Lo que la evidencia descarta o señala como riesgoso</div>`;
+  html += `<div class="card" style="padding:.5rem 1.1rem;">`;
+  NUTRI_AVOID.forEach(a => {
+    html += `<div class="nutri-row">
+      <div class="nutri-row-body">
+        <div class="nutri-row-name" style="color:var(--danger);">${a.name}</div>
+        <div class="nutri-row-note">${a.why}</div>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  html += `<div class="nutri-disclaimer">Documento informativo — no reemplaza evaluación médica ni indicación profesional. Las dosis e interacciones corresponden a evidencia de investigación, no a prescripción individual. Cualquier decisión de suplementación debe evaluarse con un profesional considerando historial clínico, medicamentos y condiciones de base.</div>`;
+  return html;
+}
+
 function stars(n) {
   return Array.from({length:5},(_,i)=>`<span class="star ${i<n?'on':'off'}">${i<n?'★':'☆'}</span>`).join('');
 }
@@ -712,9 +949,10 @@ function daysSinceLastLog(){
 }
 
 // ── SUB-TABS helper ──
-function renderSubTabs(page, tabs) {
+function renderSubTabs(page, tabs, scrollable) {
   const cur = subTabs[page] || tabs[0].id;
-  return `<div class="sub-tabs">${tabs.map(t=>`<button class="sub-tab${cur===t.id?' active':''}" data-page="${page}" data-sub="${t.id}">${t.label}</button>`).join('')}</div>`;
+  const cls = scrollable ? 'sub-tabs scroll-tabs' : 'sub-tabs';
+  return `<div class="${cls.trim()}">${tabs.map(t=>`<button class="sub-tab${cur===t.id?' active':''}" data-page="${page}" data-sub="${t.id}">${t.label}</button>`).join('')}</div>`;
 }
 function attachSubTabs(page, onSwitch) {
   document.querySelectorAll(`[data-page="${page}"]`).forEach(btn=>{
@@ -876,7 +1114,10 @@ function renderNutricion() {
   let html = renderSubTabs('nutricion',[
     {id:'catalogo', label:'Catálogo NO'},
     {id:'registro', label:'Hoy registré'},
-  ]);
+    {id:'fases', label:'Fases'},
+    {id:'cruces', label:'Cruces'},
+    {id:'protocolo', label:'Protocolo'},
+  ], true);
 
   if (cur === 'catalogo') {
     NO_CATS.forEach(cat=>{
@@ -922,6 +1163,12 @@ function renderNutricion() {
       <div class="overline" style="margin-bottom:.5rem;">Suplementación — Semana ${w}</div>
       <div class="micro" style="color:var(--text-2);line-height:1.7;">${suppNote(w)}</div>
     </div>`;
+  } else if (cur === 'fases') {
+    html += renderNutriFases();
+  } else if (cur === 'cruces') {
+    html += renderNutriCruces();
+  } else if (cur === 'protocolo') {
+    html += renderNutriProtocolo();
   } else {
     // ── REGISTRO pestaña ──
     const eaten = Object.entries(todayLog).filter(([,v])=>v.eaten);
