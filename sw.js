@@ -1,5 +1,5 @@
 // Service Worker — 12 Semanas Piso Pélvico
-const SCOPE = '/12-semanas-/';
+const SCOPE = '/12-semanas/';
 let pendingTimeouts = [];
 
 self.addEventListener('install', () => self.skipWaiting());

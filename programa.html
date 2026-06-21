@@ -1025,7 +1025,7 @@ let swReg = null;
 async function setupNotifications() {
   if (!('serviceWorker' in navigator)||!('Notification' in window)) return;
   try {
-    swReg = await navigator.serviceWorker.register('/12-semanas-/sw.js');
+    swReg = await navigator.serviceWorker.register('/12-semanas/sw.js');
     await navigator.serviceWorker.ready;
   } catch(e){}
 }
