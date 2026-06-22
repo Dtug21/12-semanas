@@ -2,10 +2,16 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>12 Semanas — Piso Pélvico</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="manifest" href="/12-semanas-/manifest.json">
+<meta name="theme-color" content="#0B0B0C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="12 Semanas">
+<link rel="apple-touch-icon" href="/12-semanas-/icon.svg">
 <style>
 :root {
   --primary:        #C6F24E;
@@ -31,7 +37,7 @@
   --text-2:         #A1A1A6;
   --text-3:         #6B6B70;
   --r-sm: 8px; --r-md: 12px; --r-lg: 16px;
-  --tab-h: 72px;
+  --tab-h: 80px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -70,7 +76,7 @@ body{
   flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:5px;cursor:pointer;border:none;background:transparent;
   color:var(--text-3);font-family:inherit;font-size:11px;font-weight:500;
-  letter-spacing:.3px;transition:color .15s;padding:8px 0 4px;
+  letter-spacing:.3px;transition:color .15s;padding:8px 0 10px;
   min-height:0;
 }
 .nav-btn .nav-icon{font-size:24px;line-height:1.1;display:block;}
@@ -354,6 +360,19 @@ textarea.obs{font-family:inherit;font-size:12.5px;min-height:56px;color:var(--te
 .notif-banner.show{display:flex;}
 .notif-txt{flex:1;font-size:13px;color:var(--text-1);font-weight:500;}
 .notif-close{background:transparent;border:none;color:var(--text-3);font-size:18px;padding:0 4px;cursor:pointer;line-height:1;}
+
+/* ── BACK TO TOP ── */
+.back-to-top { position:fixed; bottom:calc(var(--tab-h) + 15px); right:15px; width:40px; height:40px; border-radius:50%; background:var(--card-el); color:var(--text-1); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity 0.3s, transform 0.3s; z-index:100; box-shadow:0 4px 12px rgba(0,0,0,0.5); transform:translateY(10px); }
+.back-to-top.show { opacity:1; pointer-events:auto; transform:translateY(0); }
+.back-to-top:hover { background:var(--border); }
+
+/* ── DATE SELECTOR (Hoy) ── */
+.date-sel{display:flex;gap:5px;overflow-x:auto;margin-bottom:.8rem;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
+.date-sel::-webkit-scrollbar{display:none;}
+.date-chip{flex-shrink:0;padding:5px 13px;border-radius:99px;font-size:12px;font-weight:500;border:1px solid var(--border-s);background:var(--card-el);color:var(--text-3);cursor:pointer;transition:all .12s;font-family:inherit;}
+.date-chip.active{background:var(--primary);color:var(--accent-text);border-color:var(--primary);font-weight:600;}
+.date-chip.has-data:not(.active){border-color:var(--primary-border);color:var(--primary);}
+.late-reg-banner{display:flex;align-items:center;gap:8px;background:var(--warning-dim);border:1px solid rgba(251,169,76,.25);border-radius:var(--r-md);padding:.65rem .9rem;margin-bottom:.8rem;font-size:12.5px;color:var(--warning);font-weight:500;}
 </style>
 </head>
 <body>
@@ -394,6 +413,8 @@ textarea.obs{font-family:inherit;font-size:12.5px;min-height:56px;color:var(--te
     </div>
     <div id="historial-content" style="padding-top:.8rem;"></div>
   </div>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Volver arriba">↑</button>
 
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
@@ -443,6 +464,7 @@ let currentTab = 'hoy';
 let subTabs = { nutricion: 'catalogo', progreso: 'hoy' };
 let selectedEhs = null, selectedMorning = null;
 let dlMorning = null;
+let selectedDate = null; // se inicializa en renderHoy
 
 // ── TAB NAVIGATION ──
 document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -473,6 +495,18 @@ function renderTab(tab) {
 function todayISO() { return new Date().toISOString().slice(0,10); }
 function daysSince(d) { return d ? Math.floor((new Date()-new Date(d))/86400000) : 0; }
 function currentWeek() { return !state.startDate ? 1 : Math.min(12,Math.max(1,Math.floor(daysSince(state.startDate)/7)+1)); }
+function weekForDate(iso) {
+  if (!state.startDate) return 1;
+  const days = Math.floor((isoToDate(iso) - isoToDate(state.startDate)) / 86400000);
+  return Math.min(12, Math.max(1, Math.floor(days/7)+1));
+}
+function formatChipDate(iso) {
+  const today=todayISO(), yest=addDays(today,-1);
+  if (iso===today) return 'Hoy';
+  if (iso===yest) return 'Ayer';
+  const d=isoToDate(iso);
+  return ['Do','Lu','Ma','Mi','Ju','Vi','Sa'][d.getDay()]+' '+d.getDate();
+}
 function phaseForWeek(w) {
   if (w<=4) return {name:'Fase 1 — Fundación',range:'Sem 1–4',cls:'p1'};
   if (w<=8) return {name:'Fase 2 — Construcción',range:'Sem 5–8',cls:'p2'};
@@ -787,19 +821,20 @@ function escHtml(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-function ensureTodayLog(w) {
-  const today = todayISO();
-  if (!state.logs[today]) {
-    state.logs[today] = { trainedTypes: [], session: buildSession(w, []), done: {} };
+function ensureTodayLog(w, date) {
+  const key = date || todayISO();
+  const wk = date ? weekForDate(date) : w;
+  if (!state.logs[key]) {
+    state.logs[key] = { trainedTypes: [], session: buildSession(wk, []), done: {} };
     saveState(state);
-    return state.logs[today];
+    return state.logs[key];
   }
-  const log = state.logs[today];
+  const log = state.logs[key];
   if (!log.done) log.done = {};
   if (!Array.isArray(log.trainedTypes)) log.trainedTypes = [];
   const s = log.session;
   if (!s || !Array.isArray(s.morning) || !Array.isArray(s.midday) || !Array.isArray(s.evening)) {
-    log.session = buildSession(w, log.trainedTypes);
+    log.session = buildSession(wk, log.trainedTypes);
     saveState(state);
   }
   return log;
@@ -807,16 +842,32 @@ function ensureTodayLog(w) {
 
 // ── RENDER HOY ──
 function renderHoy() {
-  const w=currentWeek(), phase=phaseForWeek(w), today=todayISO();
+  const today=todayISO();
+  if (!selectedDate || selectedDate > today) selectedDate = today;
+  const isToday = selectedDate === today;
+  const w=currentWeek(), phase=phaseForWeek(w);
   const streak=calcStreak(), gap=daysSinceLastLog();
   const d=daysSince(state.startDate), pct=Math.min(100,Math.round(d/84*100));
 
-  const log = ensureTodayLog(w);
+  const log = ensureTodayLog(w, selectedDate);
   const types=log.trainedTypes||[];
 
-  document.getElementById('hoy-sub').textContent=`Semana ${w} · Día ${d+1} · ${phase.name}`;
+  document.getElementById('hoy-sub').textContent = isToday
+    ? `Semana ${w} · Día ${d+1} · ${phase.name}`
+    : `Registro tardío — ${selectedDate}`;
 
-  let html=`
+  // Date chips: hoy + últimos 6 días
+  const chipDays=[];
+  for (let i=6;i>=0;i--) chipDays.push(addDays(today,-i));
+  let html=`<div class="date-sel">
+    ${chipDays.map(iso=>{
+      const isAct=iso===selectedDate, hasD=!!state.logs[iso];
+      return `<button class="date-chip${isAct?' active':''}${hasD&&!isAct?' has-data':''}" data-seldate="${iso}">${formatChipDate(iso)}</button>`;
+    }).join('')}
+  </div>`;
+  if (!isToday) html+=`<div class="late-reg-banner">📝 Editando ${formatChipDate(selectedDate)} — los cambios se guardan en ese día.</div>`;
+
+  html+=`
   <div class="progress-card">
     <div class="progress-top">
       <div>
@@ -862,7 +913,7 @@ function renderHoy() {
   </div>`;
 
   // Session
-  html+=renderSessionView(log.session, today);
+  html+=renderSessionView(log.session, selectedDate);
 
   document.getElementById('hoy-content').innerHTML=html;
   attachHoyEvents(w);
@@ -922,19 +973,25 @@ function renderSessionView(session, dateKey) {
 }
 
 function attachHoyEvents(w) {
+  // Date chip selection
+  document.querySelectorAll('.date-chip').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      selectedDate=chip.getAttribute('data-seldate');
+      renderHoy();
+    });
+  });
+
   // Training multi-select toggle
   document.querySelectorAll('.train-chip').forEach(chip=>{
     chip.addEventListener('click',()=>{
       const tid=chip.getAttribute('data-tid');
-      const today=todayISO();
-      const log=state.logs[today];
+      const log=state.logs[selectedDate];
       const types=log.trainedTypes||[];
       const idx=types.indexOf(tid);
-      if (idx>-1) types.splice(idx,1); // deselect
-      else types.push(tid);             // select
+      if (idx>-1) types.splice(idx,1);
+      else types.push(tid);
       log.trainedTypes=types;
-      log.session=buildSession(w,types);
-      // Keep existing done checkboxes
+      log.session=buildSession(weekForDate(selectedDate),types);
       saveState(state);
       renderHoy();
     });
@@ -1287,7 +1344,9 @@ function renderNutricion() {
         const txt=document.getElementById('txt-'+ek)?.value.trim()||'';
         if(!state.foodLog[today][food]) state.foodLog[today][food]={eaten:true};
         state.foodLog[today][food].notes=txt;
-        saveState(state); showToast('Nota guardada ✓'); renderNutricion();
+        saveState(state); showToast('Nota guardada ✓'); 
+        subTabs.nutricion = 'registro';
+        renderNutricion();
       }
     });
   });
@@ -1693,6 +1752,21 @@ function showToast(msg) {
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+// ── BACK TO TOP ──
+const backToTopBtn = document.getElementById('back-to-top');
+if (backToTopBtn) {
+  document.querySelectorAll('.page').forEach(page => {
+    page.addEventListener('scroll', () => {
+      if (page.scrollTop > 300) backToTopBtn.classList.add('show');
+      else backToTopBtn.classList.remove('show');
+    });
+  });
+  backToTopBtn.addEventListener('click', () => {
+    const activePage = document.querySelector('.page.active');
+    if (activePage) activePage.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 }
 
 // ── INIT ──

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#161618"/>
+  <rect width="512" height="512" rx="112" fill="#0B0B0C"/>
+  <!-- Fondo con color de la app -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="#161618"/>
+  <!-- Círculo acento lima -->
+  <circle cx="256" cy="220" r="110" fill="#C6F24E" opacity="0.15"/>
+  <!-- Símbolo: forma humana simplificada + energía -->
+  <text x="256" y="310" font-size="200" text-anchor="middle" font-family="system-ui,sans-serif">💪</text>
+  <!-- Texto 12S abajo -->
+  <text x="256" y="430" font-size="72" font-weight="700" text-anchor="middle" font-family="system-ui,sans-serif" fill="#C6F24E" letter-spacing="-2">12S</text>
+</svg>
