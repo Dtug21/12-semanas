@@ -2,7 +2,7 @@
   "name": "12 Semanas — Piso Pélvico",
   "short_name": "12 Semanas",
   "description": "Programa de 12 semanas para piso pélvico y función eréctil",
-  "start_url": "/12-semanas/programa.html",
+  "start_url": "/12-semanas/programa.html?v=2",
   "display": "standalone",
   "background_color": "#0B0B0C",
   "theme_color": "#0B0B0C",
