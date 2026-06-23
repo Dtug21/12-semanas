@@ -48,77 +48,98 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
-/* iOS PWA: html/body fill exactly the visible screen,
-   background extends behind Dynamic Island and Home Indicator */
-html{
-  height: -webkit-fill-available;
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   background: var(--bg);
 }
-body{
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  background:var(--bg);color:var(--text-1);
-  -webkit-font-smoothing:antialiased;
-  overflow:hidden;
-  /* Pad body so its background shows in safe areas */
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
+body {
+  -webkit-font-smoothing: antialiased;
+  color: var(--text-1);
 }
 
-/* ── APP SHELL: fills 100% of padded body ── */
-.app-shell{
-  display:flex;
-  flex-direction:column;
-  /* subtract the body padding so shell fits exactly inside safe area */
-  height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-  height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-  max-width:480px;
-  margin:0 auto;
-  position:relative;
-  overflow:hidden;
+/* APP SHELL ocupa toda la pantalla incluyendo safe areas */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  /* 100dvh incluye las safe areas cuando viewport-fit=cover está activo */
+  height: 100dvh;
+  /* fallback para browsers sin soporte a dvh */
+  height: -webkit-fill-available;
+  max-width: 480px;
+  margin: 0 auto;
+  overflow: hidden;
+  /* El fondo del shell cubre la Dynamic Island arriba y el Home Indicator abajo */
+  background: var(--bg);
 }
 
-/* ── TAB PAGES ── */
-.page{
-  flex:1;overflow-y:auto;overflow-x:hidden;
-  padding:0 1rem 1.5rem;
-  display:none;
-  -webkit-overflow-scrolling:touch;
-  /* allow overscroll bounce inside tab, not on body */
+/* TAB PAGES: el scroll ocurre aquí, padding-top empuja contenido bajo safe area superior */
+.page {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 1rem 1.5rem;
+  display: none;
+  -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
 }
-.page.active{display:block;}
-.page-header{
-  padding-top:1rem;
-  padding-bottom:1rem;
-  position:sticky;top:0;background:var(--bg);z-index:10;
-  border-bottom:1px solid var(--border);margin:0 -1rem;padding-left:1rem;padding-right:1rem;
-}
-.page-title{font-size:20px;font-weight:600;color:var(--text-1);letter-spacing:-0.4px;}
-.page-sub{font-size:12px;color:var(--text-3);margin-top:2px;}
+.page.active { display: block; }
 
-/* ── BOTTOM NAV: fixed height, no safe-area padding needed
-   because body already has padding-bottom:env(safe-area-inset-bottom) ── */
-.bottom-nav{
-  height:56px;
-  background:var(--card);
-  border-top:1px solid var(--border);
-  display:flex;
-  align-items:stretch;
-  flex-shrink:0;
+/* El header sticky ya tiene su propio padding interno */
+.page-header {
+  /* Padding top = safe area (Dynamic Island ~59px en iPhone 15) + espacio visual */
+  padding-top: calc(env(safe-area-inset-top, 50px) + 0.8rem);
+  padding-bottom: 1rem;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+  border-bottom: 1px solid var(--border);
+  margin: 0 -1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
-.nav-btn{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:4px;cursor:pointer;border:none;background:transparent;
-  color:var(--text-3);font-family:inherit;font-size:11px;font-weight:500;
-  letter-spacing:.3px;transition:color .15s;
-  min-height:0;
+.page-title { font-size: 20px; font-weight: 600; color: var(--text-1); letter-spacing: -0.4px; }
+.page-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+/* BOTTOM NAV
+   - Los botones miden 56px (área visual).
+   - padding-bottom con env() extiende el FONDO de la barra hasta el borde físico.
+   - NO hay height fijo en .bottom-nav para que sea flexible.
+*/
+.bottom-nav {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;   /* botones van arriba, el padding cubre abajo */
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  /* Extiende el fondo hasta el home indicator del iPhone */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
-.nav-btn .nav-icon{font-size:22px;line-height:1.1;display:block;}
-.nav-btn.active{color:var(--primary);}
-.nav-btn:hover{color:var(--text-2);}
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .3px;
+  transition: color .15s;
+  /* altura FIJA del área clicable - no se estira con el padding */
+  height: 56px;
+  min-height: 0;
+}
+.nav-btn .nav-icon { font-size: 22px; line-height: 1.1; display: block; }
+.nav-btn.active { color: var(--primary); }
+.nav-btn:hover { color: var(--text-2); }
 
 /* ── CARDS ── */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.1rem;margin-bottom:.8rem;}
